@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  odin-app:
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - odin-network
+    depends_on:
+      - dbOdin
+    restart: unless-stopped
+    
+  dbOdin:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: mitillo
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: odin
+    networks:
+      - odin-network
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  odin-network:
+    driver: bridge
