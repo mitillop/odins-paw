@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          BigInt        @id @default(autoincrement())
+  name        String        @db.Text
+  email       String        @unique @db.Text
+  password    String        @db.Text
+  pets        Pet[]
+  chatHistory ChatHistory[]
+}
+
+model Pet {
+  id                BigInt        @id @default(autoincrement())
+  user              User          @relation(fields: [userId], references: [id])
+  userId            BigInt
+  name              String        @db.Text
+  age               Int
+  weight            Decimal       
+  breed             String        @db.Text
+  sex               Sex
+  activityLevel     String        @db.Text
+  medicalConditions String?
+  diets             Diet[]
+  foodPortions      FoodPortion[]
+  chatHistory       ChatHistory[]
+}
+
+enum Sex {
+  Male
+  Female
+}
+
+model MedicalCondition {
+  id          BigInt  @id @default(autoincrement())
+  name        String  @db.Text
+  description String?
+}
+
+model ChatHistory {
+  id        BigInt       @id @default(autoincrement())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    BigInt
+  pet       Pet?         @relation(fields: [petId], references: [id])
+  petId     BigInt?
+  message   String       @db.Text
+  category  ChatCategory
+  createdAt DateTime     @default(now())
+}
+
+enum ChatCategory {
+  Alimentacion
+  Cuidados
+  Preguntas_Generales
+}
+
+model CareRecommendation {
+  id       BigInt @id @default(autoincrement())
+  breed    String @db.Text
+  careTips String @db.Text
+}
+
+model FoodPortion {
+  id                   BigInt  @id @default(autoincrement())
+  pet                  Pet     @relation(fields: [petId], references: [id])
+  petId                BigInt
+  portionSize          Decimal 
+  visualRepresentation String  @db.Text
+  grams                Int
+}
+
+model Diet {
+  id                BigInt   @id @default(autoincrement())
+  pet               Pet      @relation(fields: [petId], references: [id])
+  petId            BigInt  
+  calorie_intake    Int
+  recommended_foods String
+  type              DietType
+}
+
+enum DietType {
+  PRINCIPAL
+  ALTERNATIVA
+}
