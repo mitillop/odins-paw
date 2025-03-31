@@ -20,22 +20,26 @@ model User {
   password    String        @db.Text
   pets        Pet[]
   chatHistory ChatHistory[]
+
+  @@map("user")
 }
 
 model Pet {
   id                BigInt        @id @default(autoincrement())
   user              User          @relation(fields: [userId], references: [id])
-  userId            BigInt
+  userId            BigInt        @map("user_id")
   name              String        @db.Text
   age               Int
-  weight            Decimal       
+  weight            Decimal
   breed             String        @db.Text
   sex               Sex
-  activityLevel     String        @db.Text
-  medicalConditions String?
+  activityLevel     String        @map("activity_level")
+  medicalConditions String?       @map("medical_conditions")
   diets             Diet[]
   foodPortions      FoodPortion[]
   chatHistory       ChatHistory[]
+
+  @@map("pet")
 }
 
 enum Sex {
@@ -47,17 +51,21 @@ model MedicalCondition {
   id          BigInt  @id @default(autoincrement())
   name        String  @db.Text
   description String?
+
+  @@map("medical_condition")
 }
 
 model ChatHistory {
   id        BigInt       @id @default(autoincrement())
   user      User         @relation(fields: [userId], references: [id])
-  userId    BigInt
+  userId    BigInt       @map("user_id")
   pet       Pet?         @relation(fields: [petId], references: [id])
-  petId     BigInt?
+  petId     BigInt?      @map("pet_id")
   message   String       @db.Text
   category  ChatCategory
-  createdAt DateTime     @default(now())
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  @@map("chat_history")
 }
 
 enum ChatCategory {
@@ -67,27 +75,33 @@ enum ChatCategory {
 }
 
 model CareRecommendation {
-  id       BigInt @id @default(autoincrement())
-  breed    String @db.Text
-  careTips String @db.Text
+  id        BigInt @id @default(autoincrement())
+  breed     String @db.Text
+  care_tips String @db.Text
+
+  @@map("care_recommendation")
 }
 
 model FoodPortion {
   id                   BigInt  @id @default(autoincrement())
   pet                  Pet     @relation(fields: [petId], references: [id])
-  petId                BigInt
-  portionSize          Decimal 
-  visualRepresentation String  @db.Text
+  petId                BigInt  @map("pet_id")
+  portionSize          Decimal @map("portion_size")
+  visualRepresentation String  @map("visual_representation") @db.Text
   grams                Int
+
+  @@map("food_portion")
 }
 
 model Diet {
   id                BigInt   @id @default(autoincrement())
   pet               Pet      @relation(fields: [petId], references: [id])
-  petId            BigInt  
-  calorie_intake    Int
-  recommended_foods String
+  petId             BigInt   @map("pet_id")
+  calorie_intake    Int      @map("calorie_intake")
+  recommended_foods String   @map("recommended_foods") @db.Text
   type              DietType
+
+  @@map("diet")
 }
 
 enum DietType {
