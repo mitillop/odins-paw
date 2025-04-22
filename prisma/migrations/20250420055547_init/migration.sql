@@ -13,6 +13,8 @@ CREATE TABLE "user" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -28,6 +30,9 @@ CREATE TABLE "pet" (
     "sex" "Sex" NOT NULL,
     "activity_level" TEXT NOT NULL,
     "medical_conditions" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "image_url" TEXT,
 
     CONSTRAINT "pet_pkey" PRIMARY KEY ("id")
 );
