@@ -1,0 +1,14 @@
+import prisma from "../../../libs/db"
+import { currentUser } from "@clerk/nextjs/server"
+
+export async function getPets() {
+    const user = await currentUser()
+    if (!user) return null;
+
+    const userData = await prisma.user.findUnique({
+        where: { clerkId: user.id },
+        include: { pets: true },
+    })
+    if (!userData) return null;
+    return userData.pets;
+}
