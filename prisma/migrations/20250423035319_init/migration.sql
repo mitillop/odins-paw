@@ -10,11 +10,10 @@ CREATE TYPE "DietType" AS ENUM ('PRINCIPAL', 'ALTERNATIVA');
 -- CreateTable
 CREATE TABLE "user" (
     "id" BIGSERIAL NOT NULL,
+    "clerk_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "image_url" TEXT,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -88,6 +87,9 @@ CREATE TABLE "diet" (
 
     CONSTRAINT "diet_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_clerk_id_key" ON "user"("clerk_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");

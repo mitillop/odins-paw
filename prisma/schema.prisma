@@ -15,13 +15,12 @@ datasource db {
 
 model User {
   id          BigInt        @id @default(autoincrement())
+  clerkId     String        @unique @map("clerk_id")
   name        String        @db.Text
   email       String        @unique @db.Text
-  password    String        @db.Text
+  imageUrl    String?       @map("image_url")
   pets        Pet[]
   chatHistory ChatHistory[]
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
   @@map("user")
 }
 
