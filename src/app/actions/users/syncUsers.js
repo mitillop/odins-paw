@@ -11,7 +11,7 @@ export async function syncUserWithDB() {
   })
 
   if (!existing) {
-    await prisma.user.create({
+    const prismaUser = await prisma.user.create({
       data: {
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
@@ -19,8 +19,8 @@ export async function syncUserWithDB() {
         imageUrl: user.imageUrl,
       },
     })
-    console.log("User created in DB")
+    return prismaUser;
   } else {
-    console.log("User already exists in DB")
+    return existing;
   }
 }

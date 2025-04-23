@@ -1,25 +1,29 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { syncUserWithDB } from "../actions/users/syncUsers";
+import { createPet } from "../actions/pets/createPet";
 
 export default async function Page() {
-  await syncUserWithDB();
-  // Get the userId from auth() -- if null, the user is not signed in
-  const { userId } = await auth();
-
-  // Protect the route by checking if the user is signed in
-  if (!userId) {
-    return <div>Sign in to view this page</div>;
+  
+  const prismaUser = await syncUserWithDB();
+  
+  const petData = {
+    name: "Sol",
+    age: 3,
+    type: "Perro",
+    breed: "Labrador",
+    weight: 20,
+    sex: "Hembra",
+    activityLevel: "Bajo",
+    medicalConditions: "Ninguno",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    imageUrl: "https://th.bing.com/th/id/OIP.gV9-2Te-ImCRFl0EBa7vSQHaEK?rs=1&pid=ImgDetMain"
   }
+  // await createPet(petData, prismaUser);
 
-  // Get the Backend API User object when you need access to the user's information
-  const user = await currentUser();
-  console.log(user);
-
-  // Use `user` to render user details or create UI elements
   return (
     <div className="flex items-center justify-center ">
-      Welcome, {user.firstName}!
-      {/* <img src={user.imageUrl} alt="User Image" className="w-12 h-12"></img> */}
+      Welcome, {prismaUser.name}!
     </div>
   );
 }
