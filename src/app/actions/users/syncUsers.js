@@ -1,26 +1,4 @@
-import prisma from "@/libs/db"
-import { currentUser } from "@clerk/nextjs/server"
-
-export async function syncUserWithDB() {
-  const user = await currentUser()
-
-  if (!user) return
-
-  const existing = await prisma.user.findUnique({
-    where: { clerkId: user.id },
-  })
-
-  if (!existing) {
-    await prisma.user.create({
-      data: {
-        clerkId: user.id,
-        email: user.emailAddresses[0].emailAddress,
-        name: user.firstName,
-      },
-    })
-  }
-}
-import prisma from "@/libs/db"
+import prisma from "../../../libs/db"
 import { currentUser } from "@clerk/nextjs/server"
 
 export async function syncUserWithDB() {
@@ -41,5 +19,8 @@ export async function syncUserWithDB() {
         imageUrl: user.imageUrl,
       },
     })
+    console.log("User created in DB")
+  } else {
+    console.log("User already exists in DB")
   }
 }
