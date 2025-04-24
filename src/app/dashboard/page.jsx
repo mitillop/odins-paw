@@ -2,6 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { syncUserWithDB } from "../actions/users/syncUsers";
 import { getPets } from "../actions/users/getPets";
 import { createPet } from "../actions/pets/createPet";
+import Navbar from "../../components/Navbar";
 
 export default async function Page() {
   const prismaUser = await syncUserWithDB();
