@@ -4,6 +4,7 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import { SignedOut, SignInButton } from "@clerk/nextjs";
 import SimplificationLogo from "../../public/Simplification.svg";
 import HistoryIcon from "../../public/history.svg"; // Importa tu SVG
+import PetNavbar from "./PetNavbar";
 
 export default function Navbar() {
   return (
@@ -18,9 +19,7 @@ export default function Navbar() {
         <span className=" px-3 text-[var(--background)]">Odin's Paw</span>
       </div>
 
-      <ul className="flex items-center space-x-4 text-[var(--floral-white)] absolute left-1/2 transform -translate-x-1/2">
-        Mascota seleccionada debe ir aqui
-      </ul>
+      <PetNavbar />
 
       <ul className="flex items-center space-x-4 text-[var(--floral-white)]">
         <li>

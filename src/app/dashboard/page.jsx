@@ -2,11 +2,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { syncUserWithDB } from "../actions/users/syncUsers";
 import { getPets } from "../actions/users/getPets";
 import { createPet } from "../actions/pets/createPet";
-import Navbar from "../../components/Navbar";
 
 export default async function Page() {
   const prismaUser = await syncUserWithDB();
-
   const petData = {
     name: "Sol",
     age: 3,
@@ -21,18 +19,12 @@ export default async function Page() {
     imageUrl:
       "https://th.bing.com/th/id/OIP.gV9-2Te-ImCRFl0EBa7vSQHaEK?rs=1&pid=ImgDetMain",
   };
-  // await createPet(petData, prismaUser);
   const pets = await getPets();
+  // const store = useAppStore();
 
   return (
     <div className="flex items-center justify-center">
       Welcome, {prismaUser.name}!
-      <br />
-      Your Pets:
-      <br />
-      {pets.map((pet) => (
-        <div key={pet.id}>{pet.name}</div>
-      ))}
       </div>
   );
 }

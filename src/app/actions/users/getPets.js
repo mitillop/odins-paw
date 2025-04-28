@@ -1,3 +1,4 @@
+'use server'
 import prisma from "../../../libs/db"
 import { currentUser } from "@clerk/nextjs/server"
 
@@ -10,5 +11,14 @@ export async function getPets() {
         include: { pets: true },
     })
     if (!userData) return null;
-    return userData.pets;
+    const serializedPets = userData.pets.map(pet => ({
+        ...pet,
+        id: pet.id ? Number(pet.id) : null,
+        userId: pet.userId ? Number(pet.userId) : null,
+        weight: pet.weight ? Number(pet.weight) : null,
+        createdAt: pet.createdAt.toISOString(),
+        updatedAt: pet.updatedAt.toISOString()
+    }));
+    
+    return serializedPets;
 }
