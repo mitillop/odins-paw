@@ -1,10 +1,10 @@
 import React from 'react';
-import Navbar from '../../components/Navbar';
+import PetNavbar from '../../components/PetNavbar';
 
 export default function DashboardLayout({ children }) {
   return (
     <div>
-      <Navbar />
+      <PetNavbar />
       {children}
     </div>
   );

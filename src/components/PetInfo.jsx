@@ -8,14 +8,14 @@ function PetInfo() {
 
   if (!selectedPet) {
     return (
-      <div className="rounded-xl overflow-hidden bg-dark p-4 shadow-md relative text-white">
+      <div className="rounded-xl overflow-hidden p-4 shadow-md relative text-white">
         <p>No hay mascota seleccionada o la información está cargando...</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl overflow-hidden bg-[var(--primary)] shadow-md relative flex flex-col">
+    <div className="rounded-xl overflow-hidden shadow-md relative flex flex-col">
       <div className="relative w-full">
         <img
           src={selectedPet.imageUrl}
@@ -24,7 +24,7 @@ function PetInfo() {
         />
       </div>
 
-      <div className="p-4 text-right bg-[var(--accent)]">
+      <div className="p-4 text-right">
         <div className="flex items-center justify-end mb-2">
           <h2 className="text-lg font-semibold mr-2">{selectedPet.name}</h2>
           <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
@@ -60,7 +60,7 @@ function PetInfo() {
         </div>
 
         <div className="mt-4">
-          <button className="w-full bg-[var(--primary)] text-white py-2 rounded flex items-center justify-center gap-2">
+          <button className="w-full py-2 rounded flex items-center justify-center gap-2">
             Editar información
           </button>
         </div>
