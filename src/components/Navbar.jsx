@@ -4,7 +4,8 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import { SignedOut, SignInButton } from "@clerk/nextjs";
 import SimplificationLogo from "../../public/Simplification.svg";
 import HistoryIcon from "../../public/history.svg"; // Importa tu SVG
-import PetNavbar from "./PetNavbar";
+import PetNavbar from "./PetNavbar"; 
+import { PawPrint } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -40,6 +41,7 @@ export default function Navbar() {
     // </nav>
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
+        <PawPrint />
         <a className="btn btn-ghost text-xl">Odin's Paw</a>
       </div>
       <div className="navbar-center">
