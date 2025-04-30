@@ -3,6 +3,7 @@ import { syncUserWithDB } from "../actions/users/syncUsers";
 import { getPets } from "../actions/users/getPets";
 import { createPet } from "../actions/pets/createPet";
 import PetInfo from "../../components/PetInfo";
+import PetForm from "../../components/PetForm";
 
 export default async function Page() {
   // const prismaUser = await syncUserWithDB();
@@ -26,6 +27,7 @@ export default async function Page() {
   return (
     <div className="flex items-left">
       <PetInfo />
+      <PetForm />
     </div>
   );
 }
