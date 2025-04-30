@@ -8,6 +8,7 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import { History } from "lucide-react";
 import { PawPrint } from "lucide-react";
 import Link from "next/link";
+import { CirclePlus } from "lucide-react";
 
 function PetNavbar() {
   const dispatch = useAppDispatch();
@@ -27,43 +28,54 @@ function PetNavbar() {
 
   const handleSelectPet = (pet) => {
     dispatch(selectPet(pet));
-    setShowDropdown(false);
   };
 
   return (
     <div className="navbar pb bg-base-100 shadow-sm">
       <div className="navbar-start justify-left">
-        <Link href="/dashboard" className="btn btn-ghost text-xl"> <PawPrint />Odin's Paw </Link>
+        <Link href="/dashboard" className="btn btn-ghost text-xl">
+          {" "}
+          <PawPrint />
+          Odin's Paw{" "}
+        </Link>
       </div>
       <div className="navbar-center">
         <ul className="menu menu-horizontal px-1">
           <li>
             <details>
               <summary>
-                {!loading && pets && pets.length > 0
-                  ? selectedPet.name
-                  : "Mascotas"}
+                {!loading && pets && pets.length > 0 ? (
+                  selectedPet.name
+                ) : (
+                  <li>
+                    <div className="indicator">
+                      <CirclePlus width={15} height={15} /> Agregar
+                    </div>
+                  </li>
+                )}
               </summary>
               <ul className="bg-base-100 rounded-t-none p-2">
                 {!loading && pets && pets.length > 0 ? (
-                  pets.map((pet) => (
-                    <li key={pet.id}>
-                      <a
-                        onClick={() => handleSelectPet(pet)}
-                        className="flex items-center"
-                      >
-                        <span>{pet.name}</span>
-                      </a>
-                    </li>
-                  ))
+                  <>
+                    {pets.map((pet) => (
+                      <li key={pet.id}>
+                        <a
+                          onClick={() => handleSelectPet(pet)}
+                          className="flex items-center"
+                        >
+                          <span>{pet.name}</span>
+                        </a>
+                      </li>
+                    ))}
+                    <li>
+                      <div className="indicator">
+                        <CirclePlus width={15} height={15} /> Agregar
+                      </div>
+                    </li> 
+                  </>
                 ) : (
                   <li>
                     <a>No tienes mascotas</a>
-                  </li>
-                )}
-                {loading && (
-                  <li>
-                    <a>Cargando...</a>
                   </li>
                 )}
               </ul>
@@ -77,7 +89,9 @@ function PetNavbar() {
             <History />
           </div>
         </Link>
-        <SignedIn />
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </div>
   );
