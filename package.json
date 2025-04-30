@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.17.0",
+    "@heroui/react": "^2.8.0-beta.2",
     "@prisma/client": "^6.6.0",
     "@reduxjs/toolkit": "^2.7.0",
     "bcryptjs": "^3.0.2",
