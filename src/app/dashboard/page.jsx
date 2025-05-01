@@ -9,11 +9,11 @@ export default async function Page() {
   // const prismaUser = await syncUserWithDB();
   // const petData = {
   //   name: "Sol",
-  //   age: 3,
+  //   sex: "Hembra",
   //   type: "Perro",
   //   breed: "Labrador",
+  //   age: 3,
   //   weight: 20,
-  //   sex: "Hembra",
   //   activityLevel: "Bajo",
   //   medicalConditions: "Ninguno",
   //   createdAt: new Date(),
