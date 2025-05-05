@@ -3,7 +3,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Mascota } from "../../types/mascotaTypes";
-import { setUncaughtExceptionCaptureCallback } from "process";
 
 interface MascotaState {
   selectedPet: Mascota | null;

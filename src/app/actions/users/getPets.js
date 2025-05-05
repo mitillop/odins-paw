@@ -1,9 +1,11 @@
 'use server'
+import { ChartNoAxesColumnIcon } from "lucide-react"
 import prisma from "../../../libs/db"
 import { currentUser } from "@clerk/nextjs/server"
 
 export async function getPets() {
     const user = await currentUser()
+    console.log("User:", user);
     if (!user) return null;
 
     const userData = await prisma.user.findUnique({

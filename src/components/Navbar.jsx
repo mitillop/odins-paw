@@ -9,36 +9,6 @@ import { PawPrint } from "lucide-react";
 
 export default function Navbar() {
   return (
-    // <nav className="w-full shadow-md px-6 py-2 flex justify-between items-center ">
-    //   <div className="text-xl flex items-center pl-6 ">
-    //     <Image
-    //       src={SimplificationLogo}
-    //       alt="Odin's Paw Logo"
-    //       width={60}
-    //       height={60}
-    //     />
-    //     <span className=" px-3">Odin's Paw</span>
-    //   </div>
-
-    //   <PetNavbar />
-
-    //   <ul className="flex items-center space-x-4">
-    //     <li>
-    //       <Link href="/history">
-    //         <span className="pr-2">
-    //           <Image
-    //             src={HistoryIcon}
-    //             alt="Icono personalizado"
-    //             width={65}
-    //             height={65}
-    //             className="inline-block mb-2"
-    //           />
-    //         </span>
-    //       </Link>
-    //     </li>
-
-    //   </ul>
-    // </nav>
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
         <PawPrint />
