@@ -25,9 +25,9 @@ export default async function Page() {
   // const store = useAppStore();
 
   return (
-    <div className="flex items-left">
+    <div className="flex items-center justify-center gap-4  bg-white">
       <PetInfo />
-      <PetForm />
+      {/* <PetForm /> */}
     </div>
   );
 }

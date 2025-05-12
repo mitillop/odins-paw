@@ -8,15 +8,11 @@ function PetInfo() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
 
   if (!selectedPet) {
-    return (
-      <div className="rounded-xl overflow-hidden p-4 shadow-md relative text-white">
-        <p>No hay mascota seleccionada o la información está cargando...</p>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="card bg-base-100 w-96 h-171 shadow-sm ml-5">
+    <div className="card w-96 h-171 shadow-sm mt-5">
       <figure className="w-full h-60">
         {selectedPet.imageUrl ? (
           <img

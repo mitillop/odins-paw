@@ -3,17 +3,19 @@ import React, { useState } from "react";
 import { Mars, Venus, Dog, Cat } from "lucide-react";
 import { createPet } from "../app/actions/pets/createPet";
 import { useForm } from "react-hook-form";
-import { image } from "@heroui/react";
-import { uploadFile } from "../app/actions/uploadFile";
+import { uploadFile } from "../app/actions/files/uploadFile";
+import { usePets } from "../hooks/usePets";
 
 function PetForm() {
+  const { createNewPet, isCreating } = usePets();
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     reset,
-    formState: { errors, isSubmitting: formSubmitting },
+    formState: { errors, isCreating: formSubmitting },
   } = useForm({
     defaultValues: {
       name: "",
@@ -35,7 +37,6 @@ function PetForm() {
   const petType = watch("petType");
   const activityLevel = watch("activityLevel");
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
@@ -47,7 +48,6 @@ function PetForm() {
   };
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
     setError(null);
     setSuccess(false);
 
@@ -68,9 +68,10 @@ function PetForm() {
           ? data.breed
           : `${data.motherBreed} ${data.fatherBreed}`;
 
-      const photoFile = data.photo && data.photo.length > 0 ? data.photo[0] : null;
+      const photoFile =
+        data.photo && data.photo.length > 0 ? data.photo[0] : null;
       console.log("Photo file:", photoFile);
-      
+
       let imgUrl = null;
       if (photoFile) {
         imgUrl = await uploadFile(photoFile);
@@ -90,22 +91,21 @@ function PetForm() {
         imageUrl: imgUrl,
       };
 
-      const result = await createPet(petData);
+      await createNewPet(petData);
       setSuccess(true);
       reset();
     } catch (err) {
       setError(err.message || "Error al crear la mascota");
       console.error("Error al crear mascota:", err);
     } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset
-        className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 ml-5"
-        disabled={isSubmitting}
+        className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+        disabled={isCreating}
       >
         <label className="label mb-1">Nombre de la mascota</label>
         <input
@@ -372,11 +372,11 @@ function PetForm() {
         </div>
 
         <label className="label mb-1">Foto de mascota</label>
-        <input 
-          type="file" 
-          className="file-input" 
+        <input
+          type="file"
+          className="file-input"
           accept="image/*"
-          {...register("photo")} 
+          {...register("photo")}
         />
         <label className="label">Tamaño maximo 2MB</label>
 
@@ -395,9 +395,9 @@ function PetForm() {
         <button
           type="submit"
           className="btn btn-primary w-full mt-2"
-          disabled={isSubmitting || formSubmitting}
+          disabled={isCreating || formSubmitting}
         >
-          {isSubmitting ? (
+          {isCreating ? (
             <>
               <span className="loading loading-spinner loading-sm"></span>
               Guardando...
@@ -408,6 +408,7 @@ function PetForm() {
         </button>
       </fieldset>
     </form>
+    
   );
 }
 
