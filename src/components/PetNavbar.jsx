@@ -31,7 +31,7 @@ function PetNavbar() {
   };
 
   return (
-    <div className="navbar pb bg-base-primary shadow-sm relative z-30">
+    <div className="navbar pb bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-30">
       <div className="navbar-start justify-left">
         <Link href="/dashboard" className="btn btn-ghost text-xl">
           <PawPrint />
@@ -39,12 +39,12 @@ function PetNavbar() {
         </Link>
       </div>
       
-      <div className="navbar-center">
+      <div className="navbar-center z-30">
         <ul className="menu menu-horizontal px-1">
           <li className="relative">
             {!isLoading && pets && pets.length > 0 ? (
               <details className="dropdown">
-                <summary className="w-[140px] text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2">
+                <summary className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2">
                   {selectedPet ? (
                     <div className="flex items-center gap-1">
                       {selectedPet.type === "Perro" ? (
@@ -91,7 +91,7 @@ function PetNavbar() {
             ) : (
               <button
                 onClick={openModal}
-                className="w-[140px] btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
+                className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
               >
                 <CirclePlus width={16} height={16} />
                 <span className="truncate">{isLoading ? "Cargando..." : "Agregar"}</span>
@@ -101,7 +101,7 @@ function PetNavbar() {
         </ul>
       </div>
       
-      <div className="navbar-end">
+      <div className="navbar-end z-30">
         <Link href="/dashboard/history" className="btn btn-ghost flex items-center gap-2 mr-2">
           <History size={20} />
           <span className="pb-1">Historial</span>

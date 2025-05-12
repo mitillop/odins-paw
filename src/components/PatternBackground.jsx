@@ -9,7 +9,6 @@ export default function PatternBackground() {
     <div 
       className="fixed inset-0 -z-10 bg-white overflow-hidden pointer-events-none" 
       style={{ 
-        top: '67px',
         backgroundAttachment: 'fixed',
       }}
     >
@@ -19,7 +18,7 @@ export default function PatternBackground() {
         className="opacity-10"
         style={{
           position: 'fixed',
-          top: '66px',
+          top: 0,
           left: 0,
           right: 0,
           bottom: 0

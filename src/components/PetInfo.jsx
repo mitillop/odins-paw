@@ -46,7 +46,7 @@ function PetInfo() {
   };
 
   return (
-    <div className="card w-96 h-171 shadow-sm mt-5 bg-white border border-gray-300">
+    <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 relative z-10">
       <figure className="w-full h-60">
         {selectedPet.imageUrl ? (
           <img

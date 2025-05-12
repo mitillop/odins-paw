@@ -4,10 +4,10 @@ import PatternBackground from '../../components/PatternBackground';
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pt-22">
       <PetNavbar />
       <PatternBackground />
-      <div className="flex-grow relative z-0">
+      <div className="flex-grow">
         {children}
       </div>
     </div>
