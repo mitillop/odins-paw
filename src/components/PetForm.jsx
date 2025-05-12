@@ -54,14 +54,26 @@ function PetForm({ onClose }) {
     try {
       const birthDate = new Date(data.birthDate);
       const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
+      let years = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
+
       if (
         monthDiff < 0 ||
         (monthDiff === 0 && today.getDate() < birthDate.getDate())
       ) {
-        age--;
+        years--;
       }
+
+      let months = today.getMonth() - birthDate.getMonth();
+      if (months < 0) {
+        months += 12;
+      }
+
+      if (today.getDate() < birthDate.getDate()) {
+        months = (months - 1 + 12) % 12; 
+      }
+
+      const formattedAge = `${years}.${months}`;
 
       const breedValue =
         data.breedType === "purebred"
@@ -82,7 +94,7 @@ function PetForm({ onClose }) {
         sex: data.gender === "female" ? "Hembra" : "Macho",
         type: data.petType === "dog" ? "Perro" : "Gato",
         breed: breedValue,
-        age: age || 0,
+        age: formattedAge,
         weight: Number(data.weight) || 0,
         activityLevel: getActivityLevelText(data.activityLevel),
         medicalConditions: data.otherConditions || "Ninguna",

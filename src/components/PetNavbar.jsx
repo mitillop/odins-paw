@@ -16,7 +16,6 @@ function PetNavbar() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Seleccionar una mascota por defecto si no hay ninguna seleccionada pero hay mascotas disponibles
   useEffect(() => {
     if (!selectedPet && !isLoading && pets && pets.length > 0) {
       handleSelectPet(pets[0]);
@@ -27,7 +26,6 @@ function PetNavbar() {
     createNewPet(petData, {
       onSuccess: () => {
         closeModal();
-        // La selección de la nueva mascota ya está manejada en el mutation.onSuccess
       }
     });
   };
@@ -79,10 +77,10 @@ function PetNavbar() {
                       </a>
                     </li>
                   ))}
-                  <li className="mt-1">
+                  <li className="">
                     <button
                       onClick={openModal}
-                      className="flex w-full items-center justify-center gap-1 hover:bg-secondary hover:text-white rounded-md py-2 px-3 transition-colors duration-200 cursor-pointer"
+                      className="flex w-full items-center justify-center gap-1 hover:bg-secondary hover:text-white rounded-md px-3 transition-colors duration-200 cursor-pointer"
                     >
                       <CirclePlus width={16} height={16} />
                       <span>Agregar</span>
@@ -93,10 +91,10 @@ function PetNavbar() {
             ) : (
               <button
                 onClick={openModal}
-                className="w-[140px] btn btn-ghost btn-outline flex hover:border-primary items-center gap-2"
+                className="w-[140px] btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
               >
                 <CirclePlus width={16} height={16} />
-                <span>{isLoading ? "Cargando..." : "Agregar"}</span>
+                <span className="truncate">{isLoading ? "Cargando..." : "Agregar"}</span>
               </button>
             )}
           </li>
