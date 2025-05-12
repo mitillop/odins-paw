@@ -2,9 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getPets } from '../app/actions/users/getPets';
-import { createPet } from '../app/actions/pets/createPet';
+import { createPet as createPetAPI } from '../app/actions/pets/createPet';
 import { useAppDispatch } from '../libs/hooks';
-import { setPet, selectPet } from '../libs/features/pet/petSlice';
+import { setPet, selectPet, createPet as createPetAction } from '../libs/features/pet/petSlice';
 
 export function usePets() {
   const dispatch = useAppDispatch();
@@ -18,21 +18,48 @@ export function usePets() {
         dispatch(setPet(data));
       }
     },
-    staleTime: 5 * 60 * 1000, // Data remains fresh for 5 minutes
-    gcTime: 10 * 60 * 1000, // Unused data remains in cache for 10 minutes
-    refetchOnMount: false, // Prevent refetch when component remounts
-    refetchOnWindowFocus: false, // Prevent refetch when window regains focus
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   const createPetMutation = useMutation({
-    mutationFn: createPet,
-    onSuccess: () => {
+    mutationFn: createPetAPI,
+    onSuccess: (newPet) => {
+      // Update Redux state
+      dispatch(createPetAction(newPet));
+      // Seleccionar automáticamente la nueva mascota
+      dispatch(selectPet(newPet));
+      // Refresh the pets query cache
       queryClient.invalidateQueries({ queryKey: ['pets'] });
     },
   });
 
+  // Función para seleccionar la última mascota disponible
+  const selectLatestPet = (availablePets) => {
+    if (availablePets && availablePets.length > 0) {
+      const latestPet = availablePets[0]; // Asumimos que la primera mascota es la más reciente
+      dispatch(selectPet(latestPet));
+      return latestPet;
+    }
+    return null;
+  };
+
   const handleSelectPet = (pet) => {
     dispatch(selectPet(pet));
+  };
+
+  // Función modificada para aceptar opciones de callback
+  const handleCreatePet = (petData, options = {}) => {
+    return createPetMutation.mutate(petData, {
+      onSuccess: (data) => {
+        if (options.onSuccess) options.onSuccess(data);
+      },
+      onError: (error) => {
+        if (options.onError) options.onError(error);
+      }
+    });
   };
 
   return {
@@ -40,7 +67,8 @@ export function usePets() {
     isLoading,
     error,
     handleSelectPet,
-    createNewPet: createPetMutation.mutate,
+    selectLatestPet,
+    createNewPet: handleCreatePet,
     isCreating: createPetMutation.isPending
   };
 }

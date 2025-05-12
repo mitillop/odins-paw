@@ -31,8 +31,20 @@ export const petSlice = createSlice({
         state.pets = action.payload;
       }
     },
+    deletePet: (state, action: PayloadAction<Mascota>) => {
+      const petToDelete = action.payload;
+      state.pets = state.pets.filter((pet) => pet.id !== petToDelete.id);
+      if (state.selectedPet?.id === petToDelete.id) {
+        state.selectedPet = null;
+      }
+    },
+    createPet: (state, action: PayloadAction<Mascota>) => {
+      const newPet = action.payload;
+      state.pets = [...state.pets, newPet];
+      state.selectedPet = newPet;
+    }
   },
 });
 
-export const { selectPet, setPet } = petSlice.actions;
+export const { selectPet, setPet, deletePet, createPet } = petSlice.actions;
 export default petSlice.reducer;

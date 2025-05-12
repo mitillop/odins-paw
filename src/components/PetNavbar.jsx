@@ -1,34 +1,46 @@
 "use client";
 import { useEffect, useState } from "react";
 import React from "react";
-import { useAppSelector, useAppDispatch } from "../libs/hooks";
-import { getPets } from "../app/actions/users/getPets";
-import { setPet, selectPet } from "../libs/features/pet/petSlice";
+import { useAppSelector } from "../libs/hooks";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { History } from "lucide-react";
-import { PawPrint } from "lucide-react";
+import { History, PawPrint, CirclePlus, Cat, Dog } from "lucide-react";
 import Link from "next/link";
-import { CirclePlus, Cat, Dog } from "lucide-react";
 import { usePets } from "../hooks/usePets";
-import PetForm from "./PetForm"; // Ensure this points to your PetForm component
+import PetForm from "./PetForm";
 
 function PetNavbar() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
-  const { pets, isLoading, handleSelectPet, createNewPet } = usePets();
+  const { pets, isLoading, handleSelectPet, createNewPet, isCreating } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  // Seleccionar una mascota por defecto si no hay ninguna seleccionada pero hay mascotas disponibles
+  useEffect(() => {
+    if (!selectedPet && !isLoading && pets && pets.length > 0) {
+      handleSelectPet(pets[0]);
+    }
+  }, [selectedPet, pets, isLoading, handleSelectPet]);
+
+  const handleCreatePet = (petData) => {
+    createNewPet(petData, {
+      onSuccess: () => {
+        closeModal();
+        // La selección de la nueva mascota ya está manejada en el mutation.onSuccess
+      }
+    });
+  };
+
   return (
     <div className="navbar pb bg-base-primary shadow-sm relative z-30">
       <div className="navbar-start justify-left">
         <Link href="/dashboard" className="btn btn-ghost text-xl">
-          {" "}
           <PawPrint />
-          Odin's Paw{" "}
+          Odin's Paw
         </Link>
       </div>
+      
       <div className="navbar-center">
         <ul className="menu menu-horizontal px-1">
           <li className="relative">
@@ -60,29 +72,21 @@ function PetNavbar() {
                       >
                         <span className="truncate">{pet.name}</span>
                         {pet.type === "Perro" ? (
-                          <Dog
-                            width={16}
-                            height={16}
-                            className="text-primary"
-                          />
+                          <Dog width={16} height={16} className="text-primary" />
                         ) : (
-                          <Cat
-                            width={16}
-                            height={16}
-                            className="text-primary"
-                          />
+                          <Cat width={16} height={16} className="text-primary" />
                         )}
                       </a>
                     </li>
                   ))}
                   <li className="mt-1">
-                    <div
+                    <button
                       onClick={openModal}
-                      className="flex items-center justify-center gap-1 hover:bg-secondary hover:text-white rounded-md py-2 px-3 transition-colors duration-200 cursor-pointer"
+                      className="flex w-full items-center justify-center gap-1 hover:bg-secondary hover:text-white rounded-md py-2 px-3 transition-colors duration-200 cursor-pointer"
                     >
                       <CirclePlus width={16} height={16} />
                       <span>Agregar</span>
-                    </div>
+                    </button>
                   </li>
                 </ul>
               </details>
@@ -98,11 +102,9 @@ function PetNavbar() {
           </li>
         </ul>
       </div>
+      
       <div className="navbar-end">
-        <Link
-          href="/dashboard/history"
-          className="btn btn-ghost flex items-center gap-2 mr-2"
-        >
+        <Link href="/dashboard/history" className="btn btn-ghost flex items-center gap-2 mr-2">
           <History size={20} />
           <span className="pb-1">Historial</span>
         </Link>
@@ -113,15 +115,29 @@ function PetNavbar() {
 
       {isModalOpen && (
         <dialog
-          className="modal modal-open"
+          className="modal modal-open justify-center items-center"
           onClick={(e) => {
             if (e.target.classList.contains("modal")) {
               closeModal();
             }
           }}
         >
-          <div className="modal-box p-4 max-w-md mx-auto justify-center items-center">
-            <PetForm onClose={closeModal} onSubmit={createNewPet} />
+          <div className="modal-box p-4 max-w-md mx-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg">Registrar mascota</h3>
+              <button 
+                onClick={closeModal} 
+                className="btn btn-sm btn-circle btn-ghost"
+                disabled={isCreating}
+              >
+                ✕
+              </button>
+            </div>
+            <PetForm 
+              onClose={closeModal} 
+              onSubmit={handleCreatePet}
+              isSubmitting={isCreating} 
+            />
           </div>
         </dialog>
       )}

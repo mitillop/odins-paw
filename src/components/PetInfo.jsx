@@ -1,18 +1,52 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
 import { Cat, Dog, VenusAndMars, HeartPulse, Weight, Zap, CalendarHeart, Squirrel } from "lucide-react";
+import { deletePet as deletePetAction } from "../libs/features/pet/petSlice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deletePet as deletePetAPI } from "../app/actions/pets/deletePet";
+import { usePets } from "../hooks/usePets";
 
 function PetInfo() {
   const dispatch = useAppDispatch();
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { selectLatestPet } = usePets();
+
+  const deleteMutation = useMutation({
+    mutationFn: deletePetAPI,
+    onSuccess: (deletedPet) => {
+      dispatch(deletePetAction(deletedPet));
+      
+      queryClient.invalidateQueries({ queryKey: ['pets'] })
+        .then(() => {
+          const updatedPets = queryClient.getQueryData(['pets']);
+          selectLatestPet(updatedPets);
+        });
+        
+      setIsConfirmModalOpen(false);
+    },
+    onError: (error) => {
+      console.error("Error deleting pet:", error);
+      setIsConfirmModalOpen(false);
+    }
+  });
 
   if (!selectedPet) {
     return null;
   }
 
+  const handleDeletePet = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate(selectedPet);
+  };
+
   return (
-    <div className="card w-96 h-171 shadow-sm mt-5">
+    <div className="card w-96 h-171 shadow-sm mt-5 bg-white">
       <figure className="w-full h-60">
         {selectedPet.imageUrl ? (
           <img
@@ -88,16 +122,44 @@ function PetInfo() {
         
         </div>
         
-        
         <div className="card-actions justify-between">
-          <button className="btn btn-primary btn-sm">
-            Eliminar
+          <button 
+            className="btn btn-primary btn-sm"
+            onClick={handleDeletePet}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
           </button>
           <button className="btn btn-primary btn-sm">
             Editar información
           </button>
         </div>
       </div>
+
+      {isConfirmModalOpen && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Confirmar eliminación</h3>
+            <p className="py-4">¿Estás seguro que deseas eliminar a {selectedPet.name}? Esta acción no se puede deshacer.</p>
+            <div className="modal-action">
+              <button 
+                className="btn btn-outline" 
+                onClick={() => setIsConfirmModalOpen(false)}
+                disabled={deleteMutation.isPending}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-error" 
+                onClick={confirmDelete}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 }

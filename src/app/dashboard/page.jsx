@@ -4,6 +4,7 @@ import { getPets } from "../actions/users/getPets";
 import { createPet } from "../actions/pets/createPet";
 import PetInfo from "../../components/PetInfo";
 import PetForm from "../../components/PetForm";
+import PatternBackground from "../../components/PatternBackground";
 
 export default async function Page() {
   // const prismaUser = await syncUserWithDB();
@@ -25,9 +26,8 @@ export default async function Page() {
   // const store = useAppStore();
 
   return (
-    <div className="flex items-center justify-center gap-4  bg-white">
+    <div className="flex items-center justify-center gap-4">
       <PetInfo />
-      {/* <PetForm /> */}
     </div>
   );
 }

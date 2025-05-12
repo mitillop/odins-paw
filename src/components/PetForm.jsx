@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { uploadFile } from "../app/actions/files/uploadFile";
 import { usePets } from "../hooks/usePets";
 
-function PetForm() {
+function PetForm({ onClose }) {
   const { createNewPet, isCreating } = usePets();
 
   const {
@@ -94,6 +94,14 @@ function PetForm() {
       await createNewPet(petData);
       setSuccess(true);
       reset();
+
+      // Close the modal after successful pet creation
+      if (onClose) {
+        // Use a small timeout to show the success message briefly before closing
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      }
     } catch (err) {
       setError(err.message || "Error al crear la mascota");
       console.error("Error al crear mascota:", err);
@@ -104,7 +112,7 @@ function PetForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset
-        className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+        className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 ml-2 mr-8"
         disabled={isCreating}
       >
         <label className="label mb-1">Nombre de la mascota</label>
@@ -408,7 +416,6 @@ function PetForm() {
         </button>
       </fieldset>
     </form>
-    
   );
 }
 
