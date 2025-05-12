@@ -27,19 +27,15 @@ export function usePets() {
   const createPetMutation = useMutation({
     mutationFn: createPetAPI,
     onSuccess: (newPet) => {
-      // Update Redux state
       dispatch(createPetAction(newPet));
-      // Seleccionar automáticamente la nueva mascota
       dispatch(selectPet(newPet));
-      // Refresh the pets query cache
       queryClient.invalidateQueries({ queryKey: ['pets'] });
     },
   });
 
-  // Función para seleccionar la última mascota disponible
   const selectLatestPet = (availablePets) => {
     if (availablePets && availablePets.length > 0) {
-      const latestPet = availablePets[0]; // Asumimos que la primera mascota es la más reciente
+      const latestPet = availablePets[0]; 
       dispatch(selectPet(latestPet));
       return latestPet;
     }
@@ -50,7 +46,6 @@ export function usePets() {
     dispatch(selectPet(pet));
   };
 
-  // Función modificada para aceptar opciones de callback
   const handleCreatePet = (petData, options = {}) => {
     return createPetMutation.mutate(petData, {
       onSuccess: (data) => {

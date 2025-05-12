@@ -140,7 +140,7 @@ function PetInfo() {
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">Confirmar eliminación</h3>
-            <p className="py-4">¿Estás seguro que deseas eliminar a {selectedPet.name}? Esta acción no se puede deshacer.</p>
+            <p className="py-4">¿Estás seguro que deseas eliminar a {selectedPet.name}? </p>
             <div className="modal-action">
               <button 
                 className="btn btn-outline" 

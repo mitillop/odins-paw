@@ -95,9 +95,7 @@ function PetForm({ onClose }) {
       setSuccess(true);
       reset();
 
-      // Close the modal after successful pet creation
       if (onClose) {
-        // Use a small timeout to show the success message briefly before closing
         setTimeout(() => {
           onClose();
         }, 1000);
