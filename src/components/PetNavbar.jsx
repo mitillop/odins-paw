@@ -29,7 +29,6 @@ function PetNavbar() {
       }
     });
   };
-
   return (
     <div className="navbar pb bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-30">
       <div className="navbar-start justify-left">

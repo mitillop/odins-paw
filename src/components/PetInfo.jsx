@@ -28,7 +28,6 @@ function PetInfo() {
       setIsConfirmModalOpen(false);
     },
     onError: (error) => {
-      console.error("Error deleting pet:", error);
       setIsConfirmModalOpen(false);
     }
   });

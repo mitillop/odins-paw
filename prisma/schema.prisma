@@ -38,7 +38,6 @@ model Pet {
   activityLevel     String        @map("activity_level")
   medicalConditions String?       @map("medical_conditions")
   diets             Diet[]
-  foodPortions      FoodPortion[]
   chatHistory       ChatHistory[]
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
@@ -92,29 +91,17 @@ model CareRecommendation {
   @@map("care_recommendation")
 }
 
-model FoodPortion {
-  id                   BigInt  @id @default(autoincrement())
-  pet                  Pet     @relation(fields: [petId], references: [id])
-  petId                BigInt  @map("pet_id")
-  portionSize          Decimal @map("portion_size")
-  visualRepresentation String  @map("visual_representation") @db.Text
-  grams                Int
-
-  @@map("food_portion")
-}
-
 model Diet {
   id                BigInt   @id @default(autoincrement())
   pet               Pet      @relation(fields: [petId], references: [id])
   petId             BigInt   @map("pet_id")
   calorie_intake    Int      @map("calorie_intake")
   recommended_foods String   @map("recommended_foods") @db.Text
-  type              DietType
+  grams             Int
+  portion_sizes     String   @map("portion_sizes") @db.Text
+  name              String   @db.Text
+  description       String   @db.Text
 
   @@map("diet")
 }
 
-enum DietType {
-  PRINCIPAL
-  ALTERNATIVA
-}

@@ -1,17 +1,26 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getPets } from '../app/actions/users/getPets';
-import { createPet as createPetAPI } from '../app/actions/pets/createPet';
-import { useAppDispatch } from '../libs/hooks';
-import { setPet, selectPet, createPet as createPetAction } from '../libs/features/pet/petSlice';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getPets } from "../app/actions/users/getPets";
+import { createPetDiet } from "../app/actions/pets/petDiet";
+import { createPet as createPetAPI } from "../app/actions/pets/createPet";
+import { useAppDispatch } from "../libs/hooks";
+import {
+  setPet,
+  selectPet,
+  createPet as createPetAction,
+} from "../libs/features/pet/petSlice";
 
 export function usePets() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
-  
-  const { data: pets, isLoading, error } = useQuery({
-    queryKey: ['pets'],
+
+  const {
+    data: pets,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["pets"],
     queryFn: getPets,
     onSuccess: (data) => {
       if (data && data.length > 0) {
@@ -29,13 +38,13 @@ export function usePets() {
     onSuccess: (newPet) => {
       dispatch(createPetAction(newPet));
       dispatch(selectPet(newPet));
-      queryClient.invalidateQueries({ queryKey: ['pets'] });
+      queryClient.invalidateQueries({ queryKey: ["pets"] });
     },
   });
 
   const selectLatestPet = (availablePets) => {
     if (availablePets && availablePets.length > 0) {
-      const latestPet = availablePets[0]; 
+      const latestPet = availablePets[0];
       dispatch(selectPet(latestPet));
       return latestPet;
     }
@@ -50,10 +59,11 @@ export function usePets() {
     return createPetMutation.mutate(petData, {
       onSuccess: (data) => {
         if (options.onSuccess) options.onSuccess(data);
+        createPetDiet(petData);
       },
       onError: (error) => {
         if (options.onError) options.onError(error);
-      }
+      },
     });
   };
 
@@ -64,6 +74,6 @@ export function usePets() {
     handleSelectPet,
     selectLatestPet,
     createNewPet: handleCreatePet,
-    isCreating: createPetMutation.isPending
+    isCreating: createPetMutation.isPending,
   };
 }

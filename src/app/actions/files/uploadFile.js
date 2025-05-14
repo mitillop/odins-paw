@@ -10,17 +10,6 @@ export async function uploadFile(file) {
       throw new Error('No file provided');
     }
     
-    // Log file object details for debugging
-    console.log('File object keys:', Object.keys(file));
-    console.log('File properties:', {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      lastModified: file.lastModified,
-      filepath: file.filepath,
-      path: file.path
-    });
-    
     const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
     if (!connectionString) {
       throw new Error('Azure Storage connection string not configured');
@@ -63,7 +52,6 @@ export async function uploadFile(file) {
       buffer = Buffer.from(base64Data, 'base64');
     } else {
       // Try to handle as multer file or generic object
-      console.error('Unknown file format, attempting to stringify:', JSON.stringify(file, null, 2));
       throw new Error(`Unsupported file format: ${file.constructor.name}`);
     }
     
@@ -84,8 +72,6 @@ export async function uploadFile(file) {
     return blockBlobClient.url;
     
   } catch (error) {
-    console.error('Error uploading file details:', error);
-    console.error('Stack trace:', error.stack);
     throw new Error(`Error uploading file: ${error.message}`);
   }
 }

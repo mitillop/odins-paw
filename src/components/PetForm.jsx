@@ -82,7 +82,6 @@ function PetForm({ onClose }) {
 
       const photoFile =
         data.photo && data.photo.length > 0 ? data.photo[0] : null;
-      console.log("Photo file:", photoFile);
 
       let imgUrl = null;
       if (photoFile) {
@@ -102,20 +101,23 @@ function PetForm({ onClose }) {
         updatedAt: new Date().toISOString(),
         imageUrl: imgUrl,
       };
-
-      await createNewPet(petData);
-      setSuccess(true);
-      reset();
-
-      if (onClose) {
-        setTimeout(() => {
-          onClose();
-        }, 1000);
-      }
+      console.log("Pet data to be sent:", petData);
+      await createNewPet(petData, {
+        onSuccess: () => {
+          setSuccess(true);
+          reset();
+          if (onClose) {
+            setTimeout(() => {
+              onClose();
+            }, 1000);
+          }
+        },
+        onError: (err) => {
+          setError(err.message || "Error al crear la mascota");
+        }
+      });
     } catch (err) {
       setError(err.message || "Error al crear la mascota");
-      console.error("Error al crear mascota:", err);
-    } finally {
     }
   };
 
