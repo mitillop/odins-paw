@@ -67,8 +67,7 @@ Necesito que generes una dieta con los siguientes campos (en formato JSON):
       { "name": "Mañana", "value": 120 },
       { "name": "Tarde", "value": 180 },
       { "name": "Noche", "value": 200 }
-    ],
-    "colors": ["#0088FE", "#00C49F", "#FFBB28"]
+    ]
   }
 
 Responde con un arreglo de 5 objetos JSON, donde el primero corresponde a la dieta de croquetas tradicionales, despues cada uno representando una dieta distinta.
