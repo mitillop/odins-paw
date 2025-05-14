@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getPets } from "../app/actions/users/getPets";
-import { createPetDiet } from "../app/actions/pets/petDiet";
+import { createPetDiet } from "../app/actions/pets/createDiets";
 import { createPet as createPetAPI } from "../app/actions/pets/createPet";
 import { useAppDispatch } from "../libs/hooks";
 import {
@@ -52,6 +52,7 @@ export function usePets() {
   };
 
   const handleSelectPet = (pet) => {
+    console.log("Selected pet:", pet);
     dispatch(selectPet(pet));
   };
 

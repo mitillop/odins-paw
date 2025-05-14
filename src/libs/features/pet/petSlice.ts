@@ -4,6 +4,20 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Mascota } from "../../types/mascotaTypes";
 
+export interface Diet {
+  id: string;
+  name: string;
+  description: string;
+  calorie_intake: number;
+  recommended_foods: string;
+  grams: number;
+  portion_sizes: {
+    data: Array<{ name: string; value: number }>;
+    colors: string[];
+  };
+  petId: string;
+}
+
 interface MascotaState {
   selectedPet: Mascota | null;
   pets: Mascota[];

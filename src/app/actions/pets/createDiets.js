@@ -77,6 +77,7 @@ Responde con un arreglo de 5 objetos JSON, donde el primero corresponde a la die
     ],
   });
   const dietResponse = completion.choices[0].message.content;
+  console.log("Diet response:", dietResponse);
   const dietData = JSON.parse(dietResponse);
   // const dietData = [
   //   {
