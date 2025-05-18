@@ -63,10 +63,10 @@ function PetInfo() {
           </div>
         )}
       </figure>
-      <div className="card-body p-4">
+      <div className="card-body p-4 overflow-y-auto" style={{ maxHeight: "calc(100% - 15rem)" }}>
         <div className="flex items-center justify-between mb-3 bg-base-200 p-2 rounded-lg">
           <h2 className="text-xl font-bold">{selectedPet.name}</h2>
-          <div className="badge badge-secondary flex items-center gap-1">
+          <div className="badge badge-secondary ">
             {selectedPet.type === "Perro" ? (
               <Dog width={16} height={16} />
             ) : (

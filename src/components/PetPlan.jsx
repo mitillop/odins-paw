@@ -4,7 +4,8 @@ import React from "react";
 import { useAppSelector } from "../libs/hooks";
 import { useDiets } from "../hooks/useDiets";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { Sunrise, Sunset, MoonStar, Beef } from "lucide-react";
+import { Sunrise, Sunset, MoonStar, Beef, Download } from "lucide-react";
+import DietPDFButton from "./DietPDFButton";
 
 const COLORS = ["#FFBB28", "#FF8042", "#8884D8"];
 
@@ -66,12 +67,13 @@ function PetPlan() {
               </PieChart>
             </ResponsiveContainer>
           </figure>
-          <div className="card-body p-4">
-            <div className="flex items-center justify-between mb-3 bg-base-200 p-2 rounded-lg">
+          <div
+            className="card-body p-4 overflow-y-auto"
+            style={{ maxHeight: "calc(100% - 15rem)" }}
+          >
+            {" "}
+            <div className="flex items-center justify-center mb-3 bg-base-200 p-2 rounded-lg">
               <h2 className="text-xl font-bold">{diets[0].name}</h2>
-              <div className="badge badge-secondary flex items-center gap-1">
-                {diets[0].grams} gramos
-              </div>
             </div>
             <div className="stats stats-vertical shadow w-full mb-3 text-sm">
               <div className="stat px-3 py-1 mt-1">
@@ -83,7 +85,7 @@ function PetPlan() {
                     style={{ backgroundColor: COLORS[0] }}
                   ></div>
                 </div>
-                <div className="stat-value">
+                <div className="stat-value text-2xl">
                   {diets[0].portion_sizes.data[0].value} gramos
                 </div>
                 <div className="text-xs  mt-1">7:00 - 8:00 AM</div>
@@ -98,7 +100,7 @@ function PetPlan() {
                     style={{ backgroundColor: COLORS[1] }}
                   ></div>
                 </div>
-                <div className="stat-value">
+                <div className="stat-value text-2xl">
                   {diets[0].portion_sizes.data[1].value} gramos
                 </div>
                 <div className="text-xs mt-1">1:00 - 2:00 PM</div>
@@ -113,7 +115,7 @@ function PetPlan() {
                     style={{ backgroundColor: COLORS[2] }}
                   ></div>
                 </div>
-                <div className="stat-value">
+                <div className="stat-value text-2xl">
                   {diets[0].portion_sizes.data[2].value} gramos
                 </div>
                 <div className="text-xs mt-1">7:00 - 8:00 PM</div>
