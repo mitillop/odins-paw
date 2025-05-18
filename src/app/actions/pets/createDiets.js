@@ -56,7 +56,7 @@ Dado el siguiente perfil de mascota:
 
 Necesito que generes una dieta con los siguientes campos (en formato JSON):
 
-- name: nombre corto de la dieta (ej. "Alta en proteína", "Baja en carbohidratos")
+- name: nombre corto de la dieta (ej. "Croquetas", "BARF", "Hipoalergénica", "Mixta", etc.)
 - description: descripción general de la dieta
 - calorie_intake: calorías aproximadas por día
 - recommended_foods: alimentos recomendados (puede ser una lista separada por comas)

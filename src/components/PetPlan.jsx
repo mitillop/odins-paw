@@ -4,9 +4,9 @@ import React from "react";
 import { useAppSelector } from "../libs/hooks";
 import { useDiets } from "../hooks/useDiets";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { Sunrise } from "lucide-react";
+import { Sunrise, Sunset, MoonStar, Beef } from "lucide-react";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
+const COLORS = ["#FFBB28", "#FF8042", "#8884D8"];
 
 function PetPlan() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
@@ -55,49 +55,93 @@ function PetPlan() {
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"
-                  label={({ name }) => `${name}`}
                 >
                   {diets[0].portion_sizes.data.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={
-                        diets[0].portion_sizes.colors?.[index] ||
-                        COLORS[index % COLORS.length]
-                      }
+                      fill={COLORS[index % COLORS.length]}
                     />
                   ))}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
           </figure>
-          <div className="flex items-center justify-between mb-3 bg-base-200 p-2 rounded-lg">
-            <div className="badge badge-secondary flex items-center gap-1"></div>
-          </div>
           <div className="card-body p-4">
-            <div className="stats stats-vertical shadow">
-              <div className="stat">
-                <div className="stat-title flex items-center">
+            <div className="flex items-center justify-between mb-3 bg-base-200 p-2 rounded-lg">
+              <h2 className="text-xl font-bold">{diets[0].name}</h2>
+              <div className="badge badge-secondary flex items-center gap-1">
+                {diets[0].grams} gramos
+              </div>
+            </div>
+            <div className="stats stats-vertical shadow w-full mb-3 text-sm">
+              <div className="stat px-3 py-1 mt-1">
+                <div className="stat-title text-xs text-primary flex items-center gap-1">
+                  <Sunrise size={14} className="text-primary" />
                   Mañana
-                  <span className="ml-2">
-                    <Sunrise />
-                  </span>
+                  <div
+                    className="ml-auto w-3 h-3 rounded-full mt-auto"
+                    style={{ backgroundColor: COLORS[0] }}
+                  ></div>
                 </div>
                 <div className="stat-value">
                   {diets[0].portion_sizes.data[0].value} gramos
                 </div>
-                <div className="stat-desc">Jan 1st - Feb 1st</div>
+                <div className="text-xs  mt-1">7:00 - 8:00 AM</div>
               </div>
 
-              <div className="stat">
-                <div className="stat-title">New Users</div>
-                <div className="stat-value">4,200</div>
-                <div className="stat-desc">↗︎ 400 (22%)</div>
+              <div className="stat px-3 py-1">
+                <div className="stat-title text-xs text-primary flex items-center gap-1">
+                  <Sunset size={14} className="text-primary" />
+                  Tarde
+                  <div
+                    className="ml-auto w-3 h-3 rounded-full mt-auto"
+                    style={{ backgroundColor: COLORS[1] }}
+                  ></div>
+                </div>
+                <div className="stat-value">
+                  {diets[0].portion_sizes.data[1].value} gramos
+                </div>
+                <div className="text-xs mt-1">1:00 - 2:00 PM</div>
               </div>
 
-              <div className="stat">
-                <div className="stat-title">New Registers</div>
-                <div className="stat-value">1,200</div>
-                <div className="stat-desc">↘︎ 90 (14%)</div>
+              <div className="stat px-3 py-1">
+                <div className="stat-title text-xs text-primary flex items-center gap-1">
+                  <MoonStar size={14} className="text-primary" />
+                  Noche
+                  <div
+                    className="ml-auto w-3 h-3 rounded-full mt-auto"
+                    style={{ backgroundColor: COLORS[2] }}
+                  ></div>
+                </div>
+                <div className="stat-value">
+                  {diets[0].portion_sizes.data[2].value} gramos
+                </div>
+                <div className="text-xs mt-1">7:00 - 8:00 PM</div>
+              </div>
+            </div>
+            <div className="mt-3">
+              <div className="card bg-base-100 shadow-md">
+                <div className="card-body p-3">
+                  <h3 className="card-title text-sm font-medium text-primary flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4 stroke-current"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    Alimentos recomendados
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {diets[0].recommended_foods}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
