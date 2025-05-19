@@ -24,10 +24,25 @@ export async function deletePet(data) {
   }
   const petExists = existingUser.pets.some(
     (pet) => pet.name.toLowerCase() === data.name.toLowerCase()
-  );
-  if (!petExists) {
+  );  if (!petExists) {
     throw new Error(`No tienes una mascota con el nombre "${data.name}"`);
   }
+  
+  await prisma.diet.deleteMany({
+    where: {
+      petId: data.id,
+    },
+  });
+  
+  await prisma.chatHistory.updateMany({
+    where: {
+      petId: data.id,
+    },
+    data: {
+      petId: null,
+    },
+  });
+
   const deletedPet = await prisma.pet.delete({
     where: {
       id: data.id,

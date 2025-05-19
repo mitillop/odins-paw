@@ -42,6 +42,13 @@ export function usePets() {
     },
   });
 
+  const createDietMutation = useMutation({
+    mutationFn: createPetDiet,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["diets"] });
+    },
+  });
+
   const selectLatestPet = (availablePets) => {
     if (availablePets && availablePets.length > 0) {
       const latestPet = availablePets[0];
@@ -60,7 +67,7 @@ export function usePets() {
     return createPetMutation.mutate(petData, {
       onSuccess: (data) => {
         if (options.onSuccess) options.onSuccess(data);
-        createPetDiet(petData);
+        createDietMutation.mutate(petData);
       },
       onError: (error) => {
         if (options.onError) options.onError(error);
@@ -76,5 +83,6 @@ export function usePets() {
     selectLatestPet,
     createNewPet: handleCreatePet,
     isCreating: createPetMutation.isPending,
+    isCreatingDiet: createDietMutation.isPending,
   };
 }

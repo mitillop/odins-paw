@@ -37,9 +37,10 @@ export async function getDiets(petId) {
       petId: petId,
     },
   });
-
   return diets.map(diet => ({
     ...diet,
+    id: String(diet.id),
+    petId: String(diet.petId),
     portion_sizes: JSON.parse(diet.portion_sizes)
   }));
 }

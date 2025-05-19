@@ -12,10 +12,9 @@ function PetNavbar() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const { pets, isLoading, handleSelectPet, createNewPet, isCreating } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
+  
   useEffect(() => {
     if (!selectedPet && !isLoading && pets && pets.length > 0) {
       handleSelectPet(pets[0]);
@@ -29,6 +28,7 @@ function PetNavbar() {
       }
     });
   };
+  
   return (
     <div className="navbar pb bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-30">
       <div className="navbar-start justify-left">
@@ -39,65 +39,67 @@ function PetNavbar() {
       </div>
       
       <div className="navbar-center z-30">
-        <ul className="menu menu-horizontal px-1">
-          <li className="relative">
-            {!isLoading && pets && pets.length > 0 ? (
-              <details className="dropdown">
-                <summary className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2">
-                  {selectedPet ? (
-                    <div className="flex items-center gap-1">
-                      {selectedPet.type === "Perro" ? (
+        <div className="dropdown dropdown-hover">
+          {!isLoading && pets && pets.length > 0 ? (
+            <>
+              <div 
+                tabIndex={0} 
+                role="button" 
+                className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2"
+              >
+                {selectedPet ? (
+                  <div className="flex items-center gap-1">
+                    {selectedPet.type === "Perro" ? (
+                      <Dog width={16} height={16} className="text-primary" />
+                    ) : (
+                      <Cat width={16} height={16} className="text-primary" />
+                    )}
+                    <span>{selectedPet.name}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <CirclePlus width={16} height={16} />
+                    <span>Seleccionar</span>
+                  </div>
+                )}
+              </div>
+              <ul 
+                tabIndex={0} 
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[140px] mt-1"
+              >
+                {pets.map((pet) => (
+                  <li key={pet.id}>
+                    <a
+                      onClick={() => handleSelectPet(pet)}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="truncate">{pet.name}</span>
+                      {pet.type === "Perro" ? (
                         <Dog width={16} height={16} className="text-primary" />
                       ) : (
                         <Cat width={16} height={16} className="text-primary" />
                       )}
-                      <span>{selectedPet.name}</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <CirclePlus width={16} height={16} />
-                      <span>Seleccionar</span>
-                    </div>
-                  )}
-                </summary>
-                <ul className="bg-base-100 rounded-md shadow-lg mt-2 p-2 w-[140px] border border-gray-300 z-50 relative dropdown-content">
-                  {pets.map((pet) => (
-                    <li key={pet.id}>
-                      <a
-                        onClick={() => handleSelectPet(pet)}
-                        className="flex items-center justify-between rounded-md py-2 px-3 transition-colors duration-200"
-                      >
-                        <span className="truncate">{pet.name}</span>
-                        {pet.type === "Perro" ? (
-                          <Dog width={16} height={16} className="text-primary" />
-                        ) : (
-                          <Cat width={16} height={16} className="text-primary" />
-                        )}
-                      </a>
-                    </li>
-                  ))}
-                  <li className="">
-                    <button
-                      onClick={openModal}
-                      className="flex w-full items-center justify-center gap-1 hover:bg-secondary hover:text-white rounded-md px-3 transition-colors duration-200 cursor-pointer"
-                    >
-                      <CirclePlus width={16} height={16} />
-                      <span>Agregar</span>
-                    </button>
+                    </a>
                   </li>
-                </ul>
-              </details>
-            ) : (
-              <button
-                onClick={openModal}
-                className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
-              >
-                <CirclePlus width={16} height={16} />
-                <span className="truncate">{isLoading ? "Cargando..." : "Agregar"}</span>
-              </button>
-            )}
-          </li>
-        </ul>
+                ))}
+                <li>
+                  <a onClick={openModal} className="justify-center">
+                    <CirclePlus width={16} height={16} />
+                    <span>Agregar</span>
+                  </a>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <button
+              onClick={openModal}
+              className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
+            >
+              <CirclePlus width={16} height={16} />
+              <span className="truncate">{isLoading ? "Cargando..." : "Agregar"}</span>
+            </button>
+          )}
+        </div>
       </div>
       
       <div className="navbar-end z-30">
@@ -109,7 +111,7 @@ function PetNavbar() {
           <UserButton className="mr-2" />
         </SignedIn>
       </div>
-
+      
       {isModalOpen && (
         <dialog
           className="modal modal-open justify-center items-center"
@@ -134,8 +136,7 @@ function PetNavbar() {
               onClose={closeModal} 
               onSubmit={handleCreatePet}
               isSubmitting={isCreating} 
-            />
-          </div>
+            />          </div>
         </dialog>
       )}
     </div>

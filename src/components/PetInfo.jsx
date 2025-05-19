@@ -10,12 +10,10 @@ import { usePets } from "../hooks/usePets";
 function PetInfo() {
   const dispatch = useAppDispatch();
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);  const queryClient = useQueryClient();
   const { selectLatestPet } = usePets();
 
-  const deleteMutation = useMutation({
-    mutationFn: deletePetAPI,
+  const deleteMutation = useMutation({    mutationFn: deletePetAPI,
     onSuccess: (deletedPet) => {
       dispatch(deletePetAction(deletedPet));
       
@@ -33,9 +31,8 @@ function PetInfo() {
   });
 
   if (!selectedPet) {
-    return null;
+    return <div className="skeleton h-171 w-96"></div>;
   }
-
   const handleDeletePet = () => {
     setIsConfirmModalOpen(true);
   };
@@ -133,9 +130,7 @@ function PetInfo() {
             Editar información
           </button>
         </div>
-      </div>
-
-      {isConfirmModalOpen && (
+      </div>      {isConfirmModalOpen && (
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">Confirmar eliminación</h3>

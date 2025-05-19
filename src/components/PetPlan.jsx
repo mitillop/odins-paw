@@ -11,59 +11,112 @@ const COLORS = ["#FFBB28", "#FF8042", "#8884D8"];
 
 function PetPlan() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
+  const selectedDiet = useAppSelector((state) => state.pet.selectedDiet);
   const { diets, isLoading, error } = useDiets();
 
   if (!selectedPet) {
     return (
-      <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 relative z-10 p-4">
-        <h2 className="text-lg font-bold">Plato de comida</h2>
-        <p className="text-gray-500 mt-2">Seleccionar</p>
+      <div className="flex w-96 h-171 flex-col gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="skeleton h-4 w-96"></div>
+            <div className="skeleton h-4 w-48"></div>
+          </div>
+        </div>
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 relative z-10 p-4">
-        <h2 className="text-lg font-bold">Plato de comida</h2>
-        <p className="text-gray-500 mt-2">Cargando dietas...</p>
+      <div className="flex w-96 h-171 flex-col gap-4">
+        <div className="skeleton h-60 w-full"></div>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="skeleton h-4 w-96"></div>
+            <div className="skeleton h-4 w-48"></div>
+          </div>
+        </div>
+        <div className="skeleton h-60 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 relative z-10 p-4">
-        <h2 className="text-lg font-bold">Plato de comida</h2>
-        <p className="text-red-500 mt-2">Error: {error.message}</p>
+      <div className="flex w-96 h-171 flex-col gap-4">
+        <div className="skeleton h-60 w-full"></div>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="skeleton h-4 w-96"></div>
+            <div className="skeleton h-4 w-48"></div>
+          </div>
+        </div>
+        <div className="skeleton h-60 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
+      </div>
+    );
+  }
+  
+  if (!diets || diets.length === 0) {
+    return (
+      <div className="flex w-96 h-171 flex-col gap-4">
+        <div className="skeleton h-60 w-full"></div>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="skeleton h-4 w-96"></div>
+            <div className="skeleton h-4 w-48"></div>
+          </div>
+        </div>
+        <div className="skeleton h-60 w-full"></div>
+        <div className="skeleton h-32 w-full"></div>
       </div>
     );
   }
 
   return (
-    <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 relative z-10">
-      {diets && diets.length > 0 ? (
+    <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 ">
+      {selectedDiet ? (
         <>
+          {" "}
           <figure className="w-full h-60 flex items-center justify-center bg-gray-100">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={diets[0].portion_sizes.data}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={70}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {diets[0].portion_sizes.data.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
+                {selectedDiet.portion_sizes &&
+                selectedDiet.portion_sizes.data ? (
+                  <Pie
+                    data={selectedDiet.portion_sizes.data}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={70}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {selectedDiet.portion_sizes.data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                ) : (
+                  <text
+                    x="50%"
+                    y="50%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    No data available
+                  </text>
+                )}
               </PieChart>
             </ResponsiveContainer>
           </figure>
@@ -72,10 +125,13 @@ function PetPlan() {
             style={{ maxHeight: "calc(100% - 15rem)" }}
           >
             {" "}
-            <div className="flex items-center justify-center mb-3 bg-base-200 p-2 rounded-lg">
-              <h2 className="text-xl font-bold">{diets[0].name}</h2>
+            <div className="flex items-center justify-center mb-3 bg-neutral p-2 rounded-lg">
+              <h2 className="text-xl text-neutral-content font-bold">
+                {selectedDiet.name}
+              </h2>
             </div>
-            <div className="stats stats-vertical shadow w-full mb-3 text-sm">
+            <div className="stats stats-vertical shadow h-60 w-full mb-3 text-sm">
+              {" "}
               <div className="stat px-3 py-1 mt-1">
                 <div className="stat-title text-xs text-primary flex items-center gap-1">
                   <Sunrise size={14} className="text-primary" />
@@ -86,11 +142,14 @@ function PetPlan() {
                   ></div>
                 </div>
                 <div className="stat-value text-2xl">
-                  {diets[0].portion_sizes.data[0].value} gramos
+                  {selectedDiet.portion_sizes &&
+                  selectedDiet.portion_sizes.data &&
+                  selectedDiet.portion_sizes.data[0]
+                    ? `${selectedDiet.portion_sizes.data[0].value} gramos`
+                    : "N/A"}
                 </div>
                 <div className="text-xs  mt-1">7:00 - 8:00 AM</div>
-              </div>
-
+              </div>{" "}
               <div className="stat px-3 py-1">
                 <div className="stat-title text-xs text-primary flex items-center gap-1">
                   <Sunset size={14} className="text-primary" />
@@ -101,11 +160,14 @@ function PetPlan() {
                   ></div>
                 </div>
                 <div className="stat-value text-2xl">
-                  {diets[0].portion_sizes.data[1].value} gramos
+                  {selectedDiet.portion_sizes &&
+                  selectedDiet.portion_sizes.data &&
+                  selectedDiet.portion_sizes.data[1]
+                    ? `${selectedDiet.portion_sizes.data[1].value} gramos`
+                    : "N/A"}
                 </div>
                 <div className="text-xs mt-1">1:00 - 2:00 PM</div>
-              </div>
-
+              </div>{" "}
               <div className="stat px-3 py-1">
                 <div className="stat-title text-xs text-primary flex items-center gap-1">
                   <MoonStar size={14} className="text-primary" />
@@ -116,13 +178,17 @@ function PetPlan() {
                   ></div>
                 </div>
                 <div className="stat-value text-2xl">
-                  {diets[0].portion_sizes.data[2].value} gramos
+                  {selectedDiet.portion_sizes &&
+                  selectedDiet.portion_sizes.data &&
+                  selectedDiet.portion_sizes.data[2]
+                    ? `${selectedDiet.portion_sizes.data[2].value} gramos`
+                    : "N/A"}
                 </div>
                 <div className="text-xs mt-1">7:00 - 8:00 PM</div>
               </div>
             </div>
-            <div className="mt-3">
-              <div className="card bg-base-100 shadow-md">
+            <div className="">
+              <div className="card bg-base-100 shadow-md h-30">
                 <div className="card-body p-3">
                   <h3 className="card-title text-sm font-medium text-primary flex items-center gap-2">
                     <svg
@@ -139,9 +205,10 @@ function PetPlan() {
                       ></path>
                     </svg>
                     Alimentos recomendados
-                  </h3>
+                  </h3>{" "}
                   <div className="flex flex-wrap gap-2">
-                    {diets[0].recommended_foods}
+                    {selectedDiet.recommended_foods ||
+                      "No hay alimentos recomendados"}
                   </div>
                 </div>
               </div>
@@ -149,7 +216,17 @@ function PetPlan() {
           </div>
         </>
       ) : (
-        <p className="text-gray-500 mt-2 p-4">No hay dietas disponibles</p>
+        <div className="p-6 text-center">
+          <h2 className="text-lg font-bold">Plato de comida</h2>
+          <p className="text-gray-500 mt-4">
+            Selecciona una dieta para ver detalles
+          </p>
+          <div className="flex justify-center mt-4">
+            <div className="badge badge-primary">
+              Disponible: {diets.length} dietas
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -2,14 +2,6 @@
 
 import { jsPDF } from "jspdf";
 
-/**
- * Crea un PDF con la información de la dieta de una mascota y lo devuelve para su descarga
- * 
- * @param {Object} dietInfo - Objeto con la información de la dieta y la mascota
- * @param {Object} dietInfo.pet - Datos de la mascota (name, type, breed, weight)
- * @param {Object} dietInfo.diet - Datos de la dieta (name, portion_sizes, recommended_foods, notes)
- * @returns {Promise<{success: boolean, message: string, pdfDataUri?: string, fileName?: string}>}
- */
 export async function generateDietPDF(dietInfo) {
   try {
     const { pet, diet } = dietInfo;
