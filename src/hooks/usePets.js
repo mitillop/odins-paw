@@ -59,7 +59,6 @@ export function usePets() {
   };
 
   const handleSelectPet = (pet) => {
-    console.log("Selected pet:", pet);
     dispatch(selectPet(pet));
   };
 

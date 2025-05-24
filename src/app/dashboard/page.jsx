@@ -8,7 +8,6 @@ import { syncUserWithDB } from "../actions/users/syncUsers";
 
 export default async function Page() {
   const user = await syncUserWithDB();
-  console.log("User from DB:", user);
   return (
     <div className="flex flex-wrap justify-evenly gap-4 max-w-7xl mx-auto">
       <div className="max-w-1/3 min-w-[300px] p-2">
