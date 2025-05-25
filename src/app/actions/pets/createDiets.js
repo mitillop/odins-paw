@@ -59,7 +59,7 @@ Necesito que generes una dieta con los siguientes campos (en formato JSON):
 - name: nombre corto de la dieta (ej. "Croquetas", "BARF", "Hipoalergénica", "Mixta", etc.)
 - description: descripción general de la dieta
 - calorie_intake: calorías aproximadas por día
-- recommended_foods: alimentos recomendados (puede ser una lista separada por comas donde el primer elemento es el alimento principal iniciando con la primera letra mayúscula, seguido de otros alimentos recomendados)
+- recommended_foods: alimentos recomendados (puede ser una lista separada por comas donde el primer elemento es el alimento, seguido de otros alimentos recomendados esta lista debe de ser maximo 195 caracteres)
 - grams: total de gramos de comida diaria recomendados
 - portion_sizes: una representación JSON con las porciones distribuidas en mañana, tarde y noche, ejemplo de formato que debes seguir estrictamente:
   {

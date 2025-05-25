@@ -56,21 +56,13 @@ enum Sex {
   Hembra
 }
 
-model MedicalCondition {
-  id          BigInt  @id @default(autoincrement())
-  name        String  @db.Text
-  description String?
-
-  @@map("medical_condition")
-}
-
 model ChatHistory {
   id        BigInt       @id @default(autoincrement())
   user      User         @relation(fields: [userId], references: [id])
   userId    BigInt       @map("user_id")
   pet       Pet?         @relation(fields: [petId], references: [id])
   petId     BigInt?      @map("pet_id")
-  message   String       @db.Text
+  message   Json         @db.JsonB
   category  ChatCategory
   createdAt DateTime     @default(now()) @map("created_at")
 
@@ -81,14 +73,6 @@ enum ChatCategory {
   Alimentacion
   Cuidados
   Preguntas_Generales
-}
-
-model CareRecommendation {
-  id        BigInt @id @default(autoincrement())
-  breed     String @db.Text
-  care_tips String @db.Text
-
-  @@map("care_recommendation")
 }
 
 model Diet {
