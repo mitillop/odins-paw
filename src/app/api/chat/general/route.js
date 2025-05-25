@@ -4,15 +4,25 @@ import { streamText } from "ai";
 export const maxDuration = 30;
 
 export async function POST(req) {
-  const { messages } = await req.json();
+  const { messages, selectedPet, selectedDiet } = await req.json();
   
   try {
-    // Usar comillas simples como en los otros endpoints que funcionan
+    let systemPrompt = "Eres un asistente de mascotas amigable. Proporciona información sobre cuidado animal, comportamiento y tenencia responsable. Sé conciso y claro.";
+    
+    if (selectedPet) {
+      systemPrompt += `\n\nAsistiendo al dueño de ${selectedPet.name}, ${selectedPet.type || 'mascota'} de ${selectedPet.age || '?'} años. Raza: ${selectedPet.breed || 'No especificada'}. Peso: ${selectedPet.weight || '?'} kg.`;
+      
+      if (selectedDiet) {
+        systemPrompt += ` Dieta actual: ${selectedDiet.name || 'No especificada'} (${selectedDiet.type || 'Tipo no especificado'}).`;
+      }
+      
+      systemPrompt += ` Ajusta tus respuestas a estos datos específicos. Sé breve y claro.`;
+    }
+    
     const result = streamText({
       model: openai('gpt-4.1'),
       messages,
-      system:
-        "Eres un asistente amigable especializado en mascotas. Tu objetivo es proporcionar información general sobre el cuidado de mascotas, responder preguntas sobre comportamiento animal y ofrecer consejos generales sobre la tenencia responsable de mascotas. Mantén un tono conversacional y amable.",
+      system: systemPrompt,
     });
 
     return result.toDataStreamResponse();
