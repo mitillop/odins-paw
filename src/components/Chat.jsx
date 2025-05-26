@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { Send, User, BrainCircuit, Loader2 } from 'lucide-react';
 import { MemoizedMarkdown } from './memoized-markdown';
+import { useChatMutations } from '../hooks/useChatMutations';
 
 export default function Chat({ 
   title, 
@@ -19,16 +20,41 @@ export default function Chat({
   diets = null,
   selectedDiet = null
 }) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { onChatCreated } = useChatMutations();
+  
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: apiEndpoint,
     body: { 
       selectedPet: selectedPet,
       selectedDiet: selectedDiet,
       diets: diets
+    },
+    onFinish: (message) => {
+      console.log('Chat finished with message:', message);
+      if (message.role === 'assistant') {
+        setTimeout(() => {
+          onChatCreated();
+        }, 500);
+      }
+    },
+    onError: (error) => {
+      console.error('Chat error:', error);
     }
   });
+  
   const messagesEndRef = useRef(null);
   const textAreaRef = useRef(null);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Messages updated:', messages);
+  }, [messages]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('Chat hook error:', error);
+    }
+  }, [error]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -64,6 +90,12 @@ export default function Chat({
       </div>
       
       <div className="card-body p-4 overflow-y-auto flex-grow space-y-3">
+        {error && (
+          <div className="alert alert-error">
+            <span>Error: {error.message}</span>
+          </div>
+        )}
+        
         {messages.length === 0 ? (
           <div className="chat chat-start">
             <div className="chat-image p-1 ring-2 ring-primary rounded-full">
@@ -95,7 +127,11 @@ export default function Chat({
                   ? bubbleColorEnd + ' text-black shadow-md' 
                   : bubbleColorStart + ' text-gray-800 shadow-sm'
               }`}>
-                <MemoizedMarkdown id={message.id} content={message.content} />
+                {message.content ? (
+                  <MemoizedMarkdown id={message.id} content={message.content} />
+                ) : (
+                  <span className="text-gray-500 italic">Contenido vacío</span>
+                )}
               </div>
             </div>
           ))

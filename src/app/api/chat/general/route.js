@@ -2,12 +2,9 @@ import OpenAI from 'openai';
 import { streamText } from "ai";
 import prisma from "../../../../libs/db";
 import { currentUser } from "@clerk/nextjs/server";
+import { openai } from '@ai-sdk/openai';
 
 export const maxDuration = 30;
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req) {
   const { messages, selectedPet, selectedDiet } = await req.json();
@@ -38,35 +35,38 @@ export async function POST(req) {
       systemPrompt += ` Ajusta tus respuestas a estos datos específicos. Sé breve y claro.`;
     }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1",
+    const result = await streamText({
+      model: openai('gpt-4o-mini'),
       messages: [
         { role: "system", content: systemPrompt },
         ...messages
       ],
-    });
+      onFinish: async (completion) => {
+        try {
+          const fullContent = completion.text;
+          const titleMatch = fullContent.match(/\[TÍTULO: (.*?)\]/);
+          const title = titleMatch ? titleMatch[1].trim() : "Conversación General";
+          const cleanCompletion = fullContent.replace(/\[TÍTULO: .*?\]/, "").trim();
 
-    const completion = response.choices[0].message.content;
-    const titleMatch = completion.match(/\[TÍTULO: (.*?)\]/);
-    const title = titleMatch ? titleMatch[1].trim() : "Conversación General";
-    const cleanCompletion = completion.replace(/\[TÍTULO: .*?\]/, "").trim();
-
-    // Store in database
-    await prisma.chatHistory.create({
-      data: {
-        userId: existingUser.id,
-        petId: selectedPet?.id ? BigInt(selectedPet.id) : null,
-        message: {
-          title: title,
-          content: cleanCompletion
-        },
-        category: "Preguntas_Generales"
+          // Store in database
+          await prisma.chatHistory.create({
+            data: {
+              userId: existingUser.id,
+              petId: selectedPet?.id ? BigInt(selectedPet.id) : null,
+              message: {
+                title: title,
+                content: cleanCompletion
+              },
+              category: "Preguntas_Generales"
+            }
+          });
+        } catch (error) {
+          console.error("Error storing chat history:", error);
+        }
       }
     });
 
-    return new Response(cleanCompletion, {
-      headers: { "Content-Type": "text/plain" },
-    });
+    return result.toDataStreamResponse();
   } catch (error) {
     console.error("Error en el chat general:", error);
     return new Response(

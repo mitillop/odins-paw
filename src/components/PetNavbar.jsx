@@ -7,12 +7,18 @@ import { History, PawPrint, CirclePlus, Cat, Dog } from "lucide-react";
 import Link from "next/link";
 import { usePets } from "../hooks/usePets";
 import PetForm from "./PetForm";
+import { usePathname } from "next/navigation";
 
 function PetNavbar() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const { pets, isLoading, handleSelectPet, createNewPet, isCreating } =
     usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const pathname = usePathname();
+  
+  // Verificar si estamos en la página del historial
+  const isHistoryPage = pathname === '/dashboard/history';
+  
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -39,71 +45,74 @@ function PetNavbar() {
         </Link>
       </div>
 
-      <div className="navbar-center z-30">
-        <div className="dropdown dropdown-hover">
-          {!isLoading && pets && pets.length > 0 ? (
-            <>
-              <div
-                tabIndex={0}
-                role="button"
-                className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2"
-              >
-                {selectedPet ? (
-                  <div className="flex items-center gap-1">
-                    <span>{selectedPet.name}</span>
-                    {selectedPet.type === "Perro" ? (
-                      <Dog width={16} height={16} className="text-primary" />
-                    ) : (
-                      <Cat width={16} height={16} className="text-primary" />
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <CirclePlus width={16} height={16} />
-                    <span>Seleccionar</span>
-                  </div>
-                )}
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[140px] mt-1"
-              >
-                {pets.map((pet) => (
-                  <li key={pet.id}>
-                    <a
-                      onClick={() => handleSelectPet(pet)}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="truncate">{pet.name}</span>
-                      {pet.type === "Perro" ? (
+      {/* Solo mostrar el selector de mascotas si NO estamos en la página del historial */}
+      {!isHistoryPage && (
+        <div className="navbar-center z-30">
+          <div className="dropdown dropdown-hover">
+            {!isLoading && pets && pets.length > 0 ? (
+              <>
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2"
+                >
+                  {selectedPet ? (
+                    <div className="flex items-center gap-1">
+                      <span>{selectedPet.name}</span>
+                      {selectedPet.type === "Perro" ? (
                         <Dog width={16} height={16} className="text-primary" />
                       ) : (
                         <Cat width={16} height={16} className="text-primary" />
                       )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <CirclePlus width={16} height={16} />
+                      <span>Seleccionar</span>
+                    </div>
+                  )}
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[140px] mt-1"
+                >
+                  {pets.map((pet) => (
+                    <li key={pet.id}>
+                      <a
+                        onClick={() => handleSelectPet(pet)}
+                        className="flex items-center justify-between"
+                      >
+                        <span className="truncate">{pet.name}</span>
+                        {pet.type === "Perro" ? (
+                          <Dog width={16} height={16} className="text-primary" />
+                        ) : (
+                          <Cat width={16} height={16} className="text-primary" />
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                  <li>
+                    <a onClick={openModal} className="justify-center">
+                      <CirclePlus width={16} height={16} />
+                      <span>Agregar</span>
                     </a>
                   </li>
-                ))}
-                <li>
-                  <a onClick={openModal} className="justify-center">
-                    <CirclePlus width={16} height={16} />
-                    <span>Agregar</span>
-                  </a>
-                </li>
-              </ul>
-            </>
-          ) : (
-            <button
-              onClick={openModal}
-              className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
-            >
-              <CirclePlus width={16} height={16} />
-              <span className="truncate">
-                {isLoading ? "Cargando..." : "Agregar"}
-              </span>
-            </button>
-          )}
+                </ul>
+              </>
+            ) : (
+              <button
+                onClick={openModal}
+                className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
+              >
+                <CirclePlus width={16} height={16} />
+                <span className="truncate">
+                  {isLoading ? "Cargando..." : "Agregar"}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="navbar-end z-30">
         <Link
