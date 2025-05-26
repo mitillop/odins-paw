@@ -70,7 +70,7 @@ Necesito que generes una dieta con los siguientes campos (en formato JSON):
     ]
   }
 
-Responde con un arreglo de 5 objetos JSON, donde el primero corresponde a la dieta de croquetas tradicionales, despues cada uno representando una dieta distinta.
+Responde con un arreglo de 6 objetos JSON, donde el primero corresponde a la dieta de croquetas tradicionales, despues cada uno representando una dieta distinta.
 `,
       },
     ],

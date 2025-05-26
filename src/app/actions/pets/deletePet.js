@@ -34,12 +34,9 @@ export async function deletePet(data) {
     },
   });
   
-  await prisma.chatHistory.updateMany({
+  await prisma.chatHistory.deleteMany({
     where: {
-      petId: data.id,
-    },
-    data: {
-      petId: null,
+      userId: existingUser.id,
     },
   });
 

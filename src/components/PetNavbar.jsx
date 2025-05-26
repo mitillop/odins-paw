@@ -3,157 +3,160 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useAppSelector } from "../libs/hooks";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { History, PawPrint, CirclePlus, Cat, Dog } from "lucide-react";
+import {
+  History,
+  PawPrint,
+  Cat,
+  Dog,
+  Menu,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePets } from "../hooks/usePets";
-import PetForm from "./PetForm";
 import { usePathname } from "next/navigation";
 
 function PetNavbar() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
-  const { pets, isLoading, handleSelectPet, createNewPet, isCreating } =
-    usePets();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { pets, isLoading } = usePets();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  
-  // Verificar si estamos en la página del historial
-  const isHistoryPage = pathname === '/dashboard/history';
-  
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
-  useEffect(() => {
-    if (!selectedPet && !isLoading && pets && pets.length > 0) {
-      handleSelectPet(pets[0]);
-    }
-  }, [selectedPet, pets, isLoading, handleSelectPet]);
+  const isHistoryPage = pathname === "/dashboard/history";
 
-  const handleCreatePet = (petData) => {
-    createNewPet(petData, {
-      onSuccess: () => {
-        closeModal();
-      },
-    });
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="navbar pb bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-30">
-      <div className="navbar-start justify-left">
-        <Link href="/dashboard" className="btn btn-ghost text-xl">
-          <PawPrint />
-          Odin's Paw
+    <div className="navbar bg-base-100 shadow-lg border-b border-base-200 fixed top-0 left-0 right-0 z-50 px-4 lg:px-6">
+      {/* Logo y marca */}
+      <div className="navbar-start">
+        <Link
+          href="/dashboard"
+          className="btn btn-ghost text-xl font-bold hover:bg-primary/10 transition-colors duration-200"
+          onClick={closeMobileMenu}
+        >
+          <PawPrint className="text-primary" size={24} />
+          <span className="hidden sm:inline text-primary">Odin's Paw</span>
         </Link>
       </div>
 
-      {/* Solo mostrar el selector de mascotas si NO estamos en la página del historial */}
-      {!isHistoryPage && (
-        <div className="navbar-center z-30">
-          <div className="dropdown dropdown-hover">
-            {!isLoading && pets && pets.length > 0 ? (
-              <>
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="w-[140px] h-10 text-center overflow-hidden text-ellipsis whitespace-nowrap rounded-lg border border-gray-300 cursor-pointer transition-colors duration-200 flex justify-center items-center gap-2"
-                >
-                  {selectedPet ? (
-                    <div className="flex items-center gap-1">
-                      <span>{selectedPet.name}</span>
-                      {selectedPet.type === "Perro" ? (
-                        <Dog width={16} height={16} className="text-primary" />
-                      ) : (
-                        <Cat width={16} height={16} className="text-primary" />
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <CirclePlus width={16} height={16} />
-                      <span>Seleccionar</span>
-                    </div>
-                  )}
-                </div>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[140px] mt-1"
-                >
-                  {pets.map((pet) => (
-                    <li key={pet.id}>
-                      <a
-                        onClick={() => handleSelectPet(pet)}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="truncate">{pet.name}</span>
-                        {pet.type === "Perro" ? (
-                          <Dog width={16} height={16} className="text-primary" />
-                        ) : (
-                          <Cat width={16} height={16} className="text-primary" />
-                        )}
-                      </a>
-                    </li>
-                  ))}
-                  <li>
-                    <a onClick={openModal} className="justify-center">
-                      <CirclePlus width={16} height={16} />
-                      <span>Agregar</span>
-                    </a>
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <button
-                onClick={openModal}
-                className="w-[140px] h-10 btn btn-ghost btn-outline flex hover:border-primary items-center gap-1"
-              >
-                <CirclePlus width={16} height={16} />
-                <span className="truncate">
-                  {isLoading ? "Cargando..." : "Agregar"}
+      {/* Mascota actual - Desktop */}
+      {!isHistoryPage && selectedPet && (
+        <div className="navbar-center hidden lg:flex">
+          <div className="flex items-center gap-3 px-4 py-2 bg-primary/10 rounded-lg border border-primary/20">
+            <div className="flex items-center gap-2">
+              {selectedPet.type === "Perro" ? (
+                <Dog size={20} className="text-primary" />
+              ) : (
+                <Cat size={20} className="text-primary" />
+              )}
+              <div className="flex flex-col">
+                <span className="text-xs text-base-content/70 font-medium">
+                  Mascota actual
                 </span>
-              </button>
-            )}
+                <span className="font-semibold text-primary">
+                  {selectedPet.name}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="navbar-end z-30">
-        <Link
-          href="/dashboard/history"
-          className="btn btn-ghost flex items-center gap-2 mr-2"
-        >
-          <History size={20} />
-          <span className="pb-1">Historial</span>
-        </Link>
-        <SignedIn>
-          <UserButton className="mr-2" />
-        </SignedIn>
+      <div className="navbar-end hidden lg:flex">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/history"
+            className={`btn btn-ghost flex items-center gap-2 hover:bg-primary/10 transition-colors duration-200 ${
+              isHistoryPage ? "bg-primary/20 text-primary" : ""
+            }`}
+          >
+            <History size={20} />
+            <span>Historial</span>
+          </Link>
+          <div className="divider divider-horizontal mx-2"></div>
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox:
+                    "w-10 h-10 rounded-full border-2 border-primary/20 hover:border-primary transition-colors duration-200",
+                },
+              }}
+            />
+          </SignedIn>
+        </div>
       </div>
 
-      {isModalOpen && (
-        <dialog
-          className="modal modal-open justify-center items-center"
-          onClick={(e) => {
-            if (e.target.classList.contains("modal")) {
-              closeModal();
-            }
-          }}
+      {/* Botón menú móvil */}
+      <div className="navbar-end lg:hidden">
+        <button
+          onClick={toggleMobileMenu}
+          className="btn btn-ghost btn-square hover:bg-primary/10 transition-colors duration-200"
+          aria-label="Abrir menú"
         >
-          <div className="modal-box p-4 max-w-md mx-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg">Registrar mascota</h3>
-              <button
-                onClick={closeModal}
-                className="btn btn-sm btn-circle btn-ghost"
-                disabled={isCreating}
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Menú móvil */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-full left-0 right-0 bg-base-100 shadow-lg border-b border-base-200 lg:hidden">
+          <div className="p-4 space-y-4">
+            {/* Mascota actual - Mobile */}
+            {!isHistoryPage && selectedPet && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-base-content/70">
+                  Mascota actual
+                </h3>
+                <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
+                  {selectedPet.type === "Perro" ? (
+                    <Dog size={20} className="text-primary" />
+                  ) : (
+                    <Cat size={20} className="text-primary" />
+                  )}
+                  <span className="font-medium">{selectedPet.name}</span>
+                </div>
+                <p className="text-xs text-base-content/60">
+                  Ve al dashboard para gestionar tus mascotas
+                </p>
+              </div>
+            )}
+
+            {!isHistoryPage && selectedPet && <div className="divider my-2"></div>}
+
+            {/* Navegación - Mobile */}
+            <div className="space-y-2">
+              <Link
+                href="/dashboard/history"
+                onClick={closeMobileMenu}
+                className={`w-full btn btn-ghost justify-start gap-3 ${
+                  isHistoryPage ? "bg-primary/20 text-primary" : ""
+                }`}
               >
-                ✕
-              </button>
+                <History size={20} />
+                Historial
+              </Link>
             </div>
-            <PetForm
-              onClose={closeModal}
-              onSubmit={handleCreatePet}
-              isSubmitting={isCreating}
-            />{" "}
+
+            <div className="divider my-2"></div>
+
+            {/* Usuario - Mobile */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-base-content/70">Usuario</span>
+              <SignedIn>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox:
+                        "w-10 h-10 rounded-full border-2 border-primary/20",
+                    },
+                  }}
+                />
+              </SignedIn>
+            </div>
           </div>
-        </dialog>
+        </div>
       )}
     </div>
   );

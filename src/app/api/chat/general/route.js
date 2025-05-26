@@ -23,7 +23,7 @@ export async function POST(req) {
       throw new Error("Usuario no encontrado en la base de datos.");
     }
 
-    let systemPrompt = "Eres un asistente de mascotas amigable. Proporciona información sobre cuidado animal, comportamiento y tenencia responsable. Sé conciso y claro. Al final de tu respuesta, incluye un título corto y descriptivo para la conversación en el siguiente formato: [TÍTULO: tu título aquí]";
+    let systemPrompt = "Eres un asistente de mascotas amigable. Proporciona información sobre cuidado animal, comportamiento y tenencia responsable. Sé conciso y claro.";
     
     if (selectedPet) {
       systemPrompt += `\n\nAsistiendo al dueño de ${selectedPet.name}, ${selectedPet.type || 'mascota'} de ${selectedPet.age || '?'} años. Raza: ${selectedPet.breed || 'No especificada'}. Peso: ${selectedPet.weight || '?'} kg.`;
@@ -44,9 +44,11 @@ export async function POST(req) {
       onFinish: async (completion) => {
         try {
           const fullContent = completion.text;
-          const titleMatch = fullContent.match(/\[TÍTULO: (.*?)\]/);
-          const title = titleMatch ? titleMatch[1].trim() : "Conversación General";
-          const cleanCompletion = fullContent.replace(/\[TÍTULO: .*?\]/, "").trim();
+          // Generate a simple title based on the first message or content
+          const userMessage = messages[messages.length - 1]?.content || "Conversación";
+          const title = userMessage.length > 50 
+            ? userMessage.substring(0, 47) + "..." 
+            : userMessage;
 
           // Store in database
           await prisma.chatHistory.create({
@@ -55,7 +57,7 @@ export async function POST(req) {
               petId: selectedPet?.id ? BigInt(selectedPet.id) : null,
               message: {
                 title: title,
-                content: cleanCompletion
+                content: fullContent
               },
               category: "Preguntas_Generales"
             }

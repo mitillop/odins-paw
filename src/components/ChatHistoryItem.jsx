@@ -1,21 +1,20 @@
 import Image from "next/image";
-import { Trash2, Calendar } from "lucide-react";
+import { Trash2, Calendar, MessageCircle, HelpCircle, Sparkles, User } from "lucide-react";
 
 export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
   const message =
     typeof chat.message === "string" ? JSON.parse(chat.message) : chat.message;
 
-  // Función para obtener colores según la categoría
   const getCategoryColors = (category) => {
     switch (category) {
       case "Preguntas_Generales":
-        return "bg-blue-100 text-blue-800";
+        return "badge-primary";
       case "Alimentacion":
-        return "bg-orange-100 text-orange-800";
+        return "badge-warning";
       case "Cuidados":
-        return "bg-rose-100 text-rose-800";
+        return "badge-secondary";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "badge-neutral";
     }
   };
 
@@ -51,51 +50,146 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
     }
   };
 
-  return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative group">
-      <div className="flex items-start gap-4">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden">
-          <Image
-            src={
-              chat.pet.imageUrl ||
-              "https://odinpawsimages.blob.core.windows.net/pet-images/12e4f3ae-c4e3-4104-81f4-81a977a35f38.png"
-            }
-            alt={chat.pet.name}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold text-gray-800">
-              {chat.pet.name}
-            </h3>
-            {/* Botón de eliminar - solo visible en hover */}
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Eliminar conversación"
-            >
-              {isDeleting ? (
-                <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <Trash2 size={16} />
-              )}
-            </button>
+  // Función para formatear el contenido de la respuesta
+  const formatResponse = (content) => {
+    // Dividir por líneas y procesar cada una
+    const lines = content.split('\n');
+    const formattedLines = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      // Detectar títulos con **
+      if (line.includes('**')) {
+        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>');
+        formattedLines.push(`<div class="mb-2">${formatted}</div>`);
+      }
+      // Detectar listas numeradas
+      else if (/^\d+\./.test(line)) {
+        const number = line.match(/^(\d+)\./)[1];
+        const content = line.replace(/^\d+\.\s*/, '');
+        const formatted = content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>');
+        formattedLines.push(`
+          <div class="flex gap-3 mb-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200 transition-colors">
+            <div class="flex-shrink-0 w-6 h-6 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
+              ${number}
+            </div>
+            <div class="flex-1">${formatted}</div>
           </div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getCategoryColors(chat.category)}`}>
-              {getCategoryLabel(chat.category)}
-            </span>
-            <div className="flex items-center gap-1 text-xs text-gray-500">
-              <Calendar size={12} />
-              <span>{formatDate(chat.createdAt)}</span>
+        `);
+      }
+      // Líneas normales
+      else {
+        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>');
+        formattedLines.push(`<div class="mb-2">${formatted}</div>`);
+      }
+    }
+    
+    return formattedLines.join('');
+  };
+
+  // Valores por defecto cuando no hay mascota asociada
+  const petName = chat.pet?.name || "Consulta General";
+  const petImageUrl = chat.pet?.imageUrl || "https://odinpawsimages.blob.core.windows.net/pet-images/12e4f3ae-c4e3-4104-81f4-81a977a35f38.png";
+
+  return (
+    <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-200 hover:border-primary/20">
+      <div className="card-body p-0">
+        {/* Header con gradiente */}
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 rounded-t-2xl">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              {/* Avatar de la mascota con efecto */}
+              <div className="avatar">
+                <div className="w-20 h-20 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-base-100 shadow-lg">
+                  {chat.pet ? (
+                    <Image
+                      src={petImageUrl}
+                      alt={petName}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                      <User size={32} className="text-primary" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Información de la mascota */}
+              <div>
+                <h3 className="text-xl font-bold text-base-content flex items-center gap-2 mb-3">
+                  <MessageCircle size={20} className="text-primary" />
+                  {petName}
+                </h3>
+                
+                {/* Badges y fecha */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className={`badge ${getCategoryColors(chat.category)} badge-lg gap-1`}>
+                    <Sparkles size={12} />
+                    {getCategoryLabel(chat.category)}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-base-content/70 bg-base-100/80 px-3 py-1 rounded-full">
+                    <Calendar size={14} />
+                    <span className="font-medium">{formatDate(chat.createdAt)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Botón de eliminar mejorado */}
+            <div className="tooltip tooltip-left" data-tip="Eliminar conversación">
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="btn btn-ghost btn-sm btn-circle opacity-0 group-hover:opacity-100 transition-all duration-300 hover:btn-error hover:scale-110"
+              >
+                {isDeleting ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  <Trash2 size={18} />
+                )}
+              </button>
             </div>
           </div>
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-700">{message.title}</h4>
-            <p className="text-gray-600 text-sm line-clamp-3">{message.content}</p>
+        </div>
+
+        {/* Contenido principal */}
+        <div className="p-6 space-y-6">
+          {/* Pregunta con diseño mejorado */}
+          <div className="bg-gradient-to-r from-info/10 to-info/5 border-l-4 border-info p-5 rounded-r-xl">
+            <div className="flex items-start gap-3 mb-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-info text-info-content rounded-full flex items-center justify-center">
+                <HelpCircle size={16} />
+              </div>
+              <h4 className="text-lg font-bold text-info flex-1">
+                Pregunta
+              </h4>
+            </div>
+            <p className="text-base-content/90 text-lg leading-relaxed pl-11">
+              {message.title}
+            </p>
+          </div>
+
+          {/* Respuesta con formato mejorado */}
+          <div className="bg-gradient-to-r from-success/10 to-success/5 border-l-4 border-success p-5 rounded-r-xl">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="flex-shrink-0 w-8 h-8 bg-success text-success-content rounded-full flex items-center justify-center">
+                <Sparkles size={16} />
+              </div>
+              <h4 className="text-lg font-bold text-success flex-1">
+                Respuesta de Odin
+              </h4>
+            </div>
+            <div className="pl-11">
+              <div 
+                className="prose prose-sm max-w-none text-base-content/90 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: formatResponse(message.content) }}
+              />
+            </div>
           </div>
         </div>
       </div>

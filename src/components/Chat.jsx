@@ -9,6 +9,8 @@ import { useChatMutations } from '../hooks/useChatMutations';
 export default function Chat({ 
   title, 
   icon: Icon,
+  messageExample = "Escribe tu mensaje aquí...",
+  placeholder = "Escribe tu mensaje aquí...",
   className = "",
   borderColor = "border-primary",
   bubbleColorStart = "bg-blue-100",
@@ -18,7 +20,8 @@ export default function Chat({
   apiEndpoint = "/api/chat/general",
   selectedPet = null,
   diets = null,
-  selectedDiet = null
+  selectedDiet = null,
+  pets = null
 }) {
   const { onChatCreated } = useChatMutations();
   
@@ -105,9 +108,7 @@ export default function Chat({
               Asistente
             </div>
             <div className={`chat-bubble ${bubbleColorStart} text-gray-800 shadow-sm`}>
-              {selectedPet 
-                ? `¡Hola! Estoy aquí para ayudarte con ${selectedPet.name}.` 
-                : "¡Hola! ¿En qué puedo ayudarte hoy?"}
+              {messageExample}
             </div>
           </div>
         ) : (
@@ -156,7 +157,7 @@ export default function Chat({
             value={input}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
-            placeholder="Escribe tu mensaje aquí..."
+            placeholder={placeholder}
             className="textarea textarea-bordered w-full resize-none min-h-10 max-h-32 pr-10"
             rows={1}
             disabled={isLoading}

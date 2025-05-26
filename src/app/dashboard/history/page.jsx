@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useChatHistory } from '../../../hooks/useChatHistory'
 import ChatHistoryFilters from '../../../components/ChatHistoryFilters'
 import ChatHistoryItem from '../../../components/ChatHistoryItem'
-import { Trash2, RefreshCw } from 'lucide-react'
+import { Trash2, RefreshCw, History, MessageSquare } from 'lucide-react'
 
-export default function History() {
+export default function HistoryPage() {
   const {
     history,
     pets,
@@ -66,96 +66,140 @@ export default function History() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          <p className="font-medium">Error al cargar el historial</p>
-          <p className="text-sm">{error.message || 'Error desconocido'}</p>
-          <button 
-            onClick={refreshHistory}
-            className="mt-2 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
-          >
-            Reintentar
-          </button>
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="alert alert-error shadow-lg">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 className="font-bold">Error al cargar el historial</h3>
+              <div className="text-xs">{error.message || 'Error desconocido'}</div>
+            </div>
+          </div>
+          <div className="flex-none">
+            <button 
+              onClick={refreshHistory}
+              className="btn btn-sm btn-outline"
+            >
+              Reintentar
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Historial de Conversaciones</h1>
-        <div className="flex gap-2">
-          {selectedCategory && (
-            <button
-              onClick={clearFilters}
-              className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600"
-            >
-              Limpiar filtros
-            </button>
-          )}
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing || isLoading}
-            className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-          >
-            <RefreshCw 
-              size={14} 
-              className={`${isRefreshing ? 'animate-spin' : ''}`}
-            />
-            {isRefreshing ? 'Actualizando...' : 'Actualizar'}
-          </button>
-          {hasHistory && (
-            <button
-              onClick={() => setShowClearConfirm(true)}
-              disabled={isClearing}
-              className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-            >
-              {isClearing ? (
-                <>
-                  <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
-                  Limpiando...
-                </>
-              ) : (
-                <>
-                  <Trash2 size={14} />
-                  Limpiar todo
-                </>
+    <div className="max-w-7xl mx-auto p-4">
+      {/* Header */}
+      <div className="card bg-base-100 shadow-lg mb-6">
+        <div className="card-body">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <History className="text-primary" size={24} />
+              </div>
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-bold text-base-content">
+                  Historial de Conversaciones
+                </h1>
+                <p className="text-base-content/70 text-sm">
+                  Revisa todas tus conversaciones anteriores con el asistente
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              {selectedCategory && (
+                <button
+                  onClick={clearFilters}
+                  className="btn btn-ghost btn-sm"
+                >
+                  Limpiar filtros
+                </button>
               )}
-            </button>
-          )}
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing || isLoading}
+                className="btn btn-primary btn-sm"
+              >
+                <RefreshCw 
+                  size={16} 
+                  className={`${isRefreshing ? 'animate-spin' : ''}`}
+                />
+                {isRefreshing ? 'Actualizando...' : 'Actualizar'}
+              </button>
+              {hasHistory && (
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  disabled={isClearing}
+                  className="btn btn-error btn-sm"
+                >
+                  {isClearing ? (
+                    <>
+                      <span className="loading loading-spinner loading-xs"></span>
+                      Limpiando...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 size={16} />
+                      Limpiar todo
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Filtros */}
+      <div className="mb-6">
+        <ChatHistoryFilters 
+          onCategoryChange={handleCategoryFilter}
+          selectedCategory={selectedCategory}
+        />
+      </div>
       
-      <ChatHistoryFilters 
-        onCategoryChange={handleCategoryFilter}
-        selectedCategory={selectedCategory}
-      />
-      
+      {/* Contador de resultados */}
       {selectedCategory && (
-        <div className="mb-4 text-sm text-gray-600">
-          Mostrando {filteredCount} conversación(es) 
-          {selectedCategory && ` de categoría "${selectedCategory}"`}
+        <div className="alert alert-info mb-6">
+          <MessageSquare size={20} />
+          <span>
+            Mostrando {filteredCount} conversación(es) de categoría "{selectedCategory}"
+          </span>
         </div>
       )}
 
-      {/* Mostrar errores de mutaciones */}
+      {/* Alertas de error */}
       {deleteError && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          <p className="text-sm">Error al eliminar: {deleteError.message}</p>
+        <div className="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Error al eliminar: {deleteError.message}</span>
         </div>
       )}
 
       {clearError && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          <p className="text-sm">Error al limpiar historial: {clearError.message}</p>
+        <div className="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Error al limpiar historial: {clearError.message}</span>
         </div>
       )}
       
+      {/* Contenido principal */}
       {isLoading ? (
-        <div className="text-center py-8">
-          <div className="loading loading-spinner loading-lg"></div>
-          <p className="text-gray-500 mt-2">Cargando conversaciones...</p>
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            <div className="flex flex-col items-center justify-center py-12">
+              <span className="loading loading-spinner loading-lg text-primary"></span>
+              <p className="text-base-content/70 mt-4">Cargando conversaciones...</p>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -169,13 +213,26 @@ export default function History() {
               />
             ))
           ) : (
-            <div className="text-center py-8 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">
-                {selectedCategory 
-                  ? `No hay conversaciones de la categoría seleccionada`
-                  : `No hay conversaciones en el historial`
-                }
-              </p>
+            <div className="card bg-base-100 shadow-lg">
+              <div className="card-body">
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare size={32} className="text-base-content/40" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-base-content/70 mb-2">
+                    {selectedCategory 
+                      ? 'No hay conversaciones de la categoría seleccionada'
+                      : 'No hay conversaciones en el historial'
+                    }
+                  </h3>
+                  <p className="text-base-content/50 text-sm">
+                    {selectedCategory 
+                      ? 'Prueba seleccionando una categoría diferente o limpia los filtros'
+                      : 'Comienza una conversación en el dashboard para ver tu historial aquí'
+                    }
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -183,29 +240,31 @@ export default function History() {
 
       {/* Modal de confirmación para limpiar todo */}
       {showClearConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-lg font-bold mb-4">Confirmar eliminación</h3>
-            <p className="text-gray-600 mb-6">
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-error mb-4">
+              Confirmar eliminación
+            </h3>
+            <p className="text-base-content/70 mb-6">
               ¿Estás seguro de que quieres eliminar todo el historial de conversaciones? 
               Esta acción no se puede deshacer.
             </p>
-            <div className="flex gap-3 justify-end">
+            <div className="modal-action">
               <button
                 onClick={() => setShowClearConfirm(false)}
                 disabled={isClearing}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                className="btn btn-ghost"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleClearAll}
                 disabled={isClearing}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 flex items-center gap-2"
+                className="btn btn-error"
               >
                 {isClearing ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="loading loading-spinner loading-sm"></span>
                     Eliminando...
                   </>
                 ) : (
@@ -214,7 +273,10 @@ export default function History() {
               </button>
             </div>
           </div>
-        </div>
+          <form method="dialog" className="modal-backdrop">
+            <button onClick={() => setShowClearConfirm(false)}>close</button>
+          </form>
+        </dialog>
       )}
     </div>
   )
