@@ -4,8 +4,6 @@ import { useRouter } from 'next/navigation';
 import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs';
 
 export default function LandingPage() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser();
 
@@ -15,13 +13,123 @@ export default function LandingPage() {
     return null;
   }
 
-  const openLoginModal = (signUpMode = false) => {
-    setIsSignUp(signUpMode);
-    setIsLoginModalOpen(true);
-  };
-
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
+  // Custom appearance for Clerk components
+  const clerkAppearance = {
+    variables: {
+      colorPrimary: '#f97316', // Orange-500
+      colorPrimaryText: '#ffffff', // White text on orange background
+      colorText: '#1f2937', // Gray-800 for good contrast
+      colorTextSecondary: '#6b7280', // Gray-500 for secondary text
+      colorBackground: '#ffffff', // White background
+      colorInputBackground: '#f9fafb', // Gray-50 for input backgrounds
+      colorInputText: '#1f2937', // Gray-800 for input text
+      borderRadius: '0.75rem', // Rounded-xl to match your design
+      fontFamily: 'inherit', // Use your app's font
+    },
+    elements: {
+      rootBox: {
+        background: 'linear-gradient(135deg, #fef3e2 0%, #fef9e7 100%)', // Orange/amber gradient background
+      },
+      card: {
+        background: '#ffffff',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        border: '1px solid #f3f4f6',
+      },
+      headerTitle: {
+        color: '#ea580c', // Orange-600 for titles
+        fontSize: '1.5rem',
+        fontWeight: '700',
+      },
+      headerSubtitle: {
+        color: '#6b7280', // Gray-500 for subtitles
+      },
+      formButtonPrimary: {
+        background: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)', // Orange to amber gradient
+        color: '#ffffff',
+        fontSize: '0.875rem',
+        fontWeight: '600',
+        border: 'none',
+        borderRadius: '0.5rem',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          background: 'linear-gradient(135deg, #ea580c 0%, #d97706 100%)', // Darker on hover
+          transform: 'translateY(-1px)',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        },
+        '&:focus': {
+          background: 'linear-gradient(135deg, #ea580c 0%, #d97706 100%)',
+          boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.3)', // Orange focus ring
+        },
+      },
+      formButtonSecondary: {
+        color: '#f97316', // Orange-500 text
+        border: '1px solid #f97316',
+        background: 'transparent',
+        '&:hover': {
+          background: '#fef3e2', // Light orange background on hover
+          color: '#ea580c',
+        },
+      },
+      socialButtonsBlockButton: {
+        border: '1px solid #e5e7eb',
+        color: '#374151',
+        background: '#ffffff',
+        '&:hover': {
+          background: '#f9fafb',
+          borderColor: '#f97316',
+        },
+      },
+      formFieldInput: {
+        background: '#ffffff',
+        border: '1px solid #d1d5db',
+        color: '#1f2937',
+        borderRadius: '0.5rem',
+        '&:focus': {
+          borderColor: '#f97316',
+          boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.1)',
+        },
+      },
+      formFieldLabel: {
+        color: '#374151',
+        fontWeight: '500',
+      },
+      identityPreviewText: {
+        color: '#6b7280',
+      },
+      dividerLine: {
+        background: '#e5e7eb',
+      },
+      dividerText: {
+        color: '#6b7280',
+      },
+      footerActionLink: {
+        color: '#f97316',
+        '&:hover': {
+          color: '#ea580c',
+        },
+      },
+      badge: {
+        background: '#fef3e2',
+        color: '#ea580c',
+      },
+      formFieldSuccessText: {
+        color: '#059669', // Green for success
+      },
+      formFieldErrorText: {
+        color: '#dc2626', // Red for errors
+      },
+      formFieldWarningText: {
+        color: '#d97706', // Amber for warnings
+      },
+      otpCodeFieldInput: {
+        borderColor: '#f97316',
+        '&:focus': {
+          borderColor: '#ea580c',
+          boxShadow: '0 0 0 2px rgba(249, 115, 22, 0.2)',
+        },
+      },
+    },
   };
 
   return (
@@ -37,18 +145,16 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="navbar-end space-x-2">
-          <button 
-            className="btn btn-ghost btn-sm"
-            onClick={() => openLoginModal(false)}
-          >
-            Iniciar Sesión
-          </button>
-          <button 
-            className="btn btn-primary btn-sm"
-            onClick={() => openLoginModal(true)}
-          >
-            Registrarse
-          </button>
+          <SignInButton mode="modal" afterSignInUrl="/dashboard" appearance={clerkAppearance}>
+            <button className="btn btn-ghost btn-sm">
+              Iniciar Sesión
+            </button>
+          </SignInButton>
+          <SignUpButton mode="modal" afterSignUpUrl="/dashboard" appearance={clerkAppearance}>
+            <button className="btn btn-primary btn-sm">
+              Registrarse
+            </button>
+          </SignUpButton>
         </div>
       </nav>
 
@@ -65,15 +171,14 @@ export default function LandingPage() {
                 planes personalizados, seguimiento de salud y consejos de expertos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
-                  className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
-                  onClick={() => openLoginModal(true)}
-                >
-                  Comenzar Gratis
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </button>
+                <SignUpButton mode="modal" afterSignUpUrl="/dashboard" appearance={clerkAppearance}>
+                  <button className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                    Comenzar Gratis
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                </SignUpButton>
                 <button className="btn btn-outline btn-lg">
                   Ver Demo
                 </button>
@@ -170,12 +275,11 @@ export default function LandingPage() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Únete a miles de dueños que ya confían en Odin's Paw para el cuidado de sus mascotas.
           </p>
-          <button 
-            className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
-            onClick={() => openLoginModal(true)}
-          >
-            Crear Cuenta Gratuita
-          </button>
+          <SignUpButton mode="modal" afterSignUpUrl="/dashboard" appearance={clerkAppearance}>
+            <button className="btn btn-primary btn-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+              Crear Cuenta Gratuita
+            </button>
+          </SignUpButton>
         </div>
       </section>
 
@@ -191,66 +295,6 @@ export default function LandingPage() {
           <p className="text-sm">© 2024 Odin's Paw. Todos los derechos reservados.</p>
         </div>
       </footer>
-
-      {/* Login Modal */}
-      {isLoginModalOpen && (
-        <div className="modal modal-open">
-          <div className="modal-box relative max-w-md">
-            <button 
-              className="btn btn-sm btn-circle absolute right-2 top-2"
-              onClick={closeLoginModal}
-            >
-              ✕
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-2xl">🐾</span>
-              </div>
-              <h3 className="text-2xl font-bold">
-                {isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión'}
-              </h3>
-              <p className="text-gray-600 mt-2">
-                {isSignUp 
-                  ? 'Únete a la comunidad de Odin\'s Paw' 
-                  : 'Bienvenido de vuelta'
-                }
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {isSignUp ? (
-                <SignUpButton mode="modal" afterSignUpUrl="/dashboard">
-                  <button className="btn btn-primary w-full">
-                    Registrarse con Email
-                  </button>
-                </SignUpButton>
-              ) : (
-                <SignInButton mode="modal" afterSignInUrl="/dashboard">
-                  <button className="btn btn-primary w-full">
-                    Iniciar Sesión
-                  </button>
-                </SignInButton>
-              )}
-              
-              <div className="divider">o</div>
-              
-              <div className="text-center">
-                <button 
-                  className="btn btn-ghost btn-sm"
-                  onClick={() => setIsSignUp(!isSignUp)}
-                >
-                  {isSignUp 
-                    ? '¿Ya tienes cuenta? Inicia sesión' 
-                    : '¿No tienes cuenta? Regístrate'
-                  }
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="modal-backdrop" onClick={closeLoginModal}></div>
-        </div>
-      )}
     </div>
   );
 }
