@@ -566,7 +566,6 @@ function PetForm({ onClose }) {
         </div>
       </div>
 
-      {/* Loading overlay */}
       {(isCreating || isRegeneratingDiets) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-base-100 p-8 rounded-lg shadow-lg flex flex-col items-center gap-4">

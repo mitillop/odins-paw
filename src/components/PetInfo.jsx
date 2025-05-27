@@ -1,39 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { useAppSelector, useAppDispatch } from "../libs/hooks";
+import { useAppSelector } from "../libs/hooks";
 import { Cat, Dog, VenusAndMars, HeartPulse, Weight, Zap, CalendarHeart, Squirrel, X } from "lucide-react";
-import { deletePet as deletePetAction } from "../libs/features/pet/petSlice";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePet as deletePetAPI } from "../app/actions/pets/deletePet";
 import { usePets } from "../hooks/usePets";
 import PetEditForm from "./PetEditForm";
 import ModalPortal from "./ModalPortal";
 
 function PetInfo() {
-  const dispatch = useAppDispatch();
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { selectLatestPet, pets } = usePets();
-
-  const deleteMutation = useMutation({
-    mutationFn: deletePetAPI,
-    onSuccess: (deletedPet) => {
-      dispatch(deletePetAction(deletedPet));
-      
-      queryClient.invalidateQueries({ queryKey: ['pets'] })
-        .then(() => {
-          const updatedPets = queryClient.getQueryData(['pets']);
-          selectLatestPet(updatedPets);
-        });
-        
-      setIsConfirmModalOpen(false);
-    },
-    onError: (error) => {
-      setIsConfirmModalOpen(false);
-    }
-  });
+  const { selectLatestPet, pets, deletePet, isDeleting } = usePets();
 
   if (!pets || pets.length === 0) {
     return (
@@ -76,7 +53,14 @@ function PetInfo() {
   };
 
   const confirmDelete = () => {
-    deleteMutation.mutate(selectedPet);
+    deletePet(selectedPet, {
+      onSuccess: () => {
+        setIsConfirmModalOpen(false);
+      },
+      onError: () => {
+        setIsConfirmModalOpen(false);
+      }
+    });
   };
 
   const handleEditPet = () => {
@@ -168,9 +152,9 @@ function PetInfo() {
           <button 
             className="btn btn-error btn-sm"
             onClick={handleDeletePet}
-            disabled={deleteMutation.isPending}
+            disabled={isDeleting}
           >
-            {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
+            {isDeleting ? "Eliminando..." : "Eliminar"}
           </button>
           <button 
             className="btn btn-primary btn-sm"
@@ -190,16 +174,16 @@ function PetInfo() {
               <button 
                 className="btn btn-outline" 
                 onClick={() => setIsConfirmModalOpen(false)}
-                disabled={deleteMutation.isPending}
+                disabled={isDeleting}
               >
                 Cancelar
               </button>
               <button 
                 className="btn btn-error" 
                 onClick={confirmDelete}
-                disabled={deleteMutation.isPending}
+                disabled={isDeleting}
               >
-                {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
+                {isDeleting ? "Eliminando..." : "Eliminar"}
               </button>
             </div>
           </div>

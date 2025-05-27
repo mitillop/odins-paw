@@ -11,7 +11,9 @@ import {
   selectPet,
   createPet as createPetAction,
   updatePet as updatePetAction,
+  deletePet as deletePetAction,
 } from "../libs/features/pet/petSlice";
+import { deletePet as deletePetAPI } from "../app/actions/pets/deletePet";
 
 export function usePets() {
   const dispatch = useAppDispatch();
@@ -72,6 +74,19 @@ export function usePets() {
     },
   });
 
+  const deletePetMutation = useMutation({
+    mutationFn: deletePetAPI,
+    onSuccess: (deletedPet) => {
+      dispatch(deletePetAction(deletedPet));
+      
+      queryClient.invalidateQueries({ queryKey: ['pets'] })
+        .then(() => {
+          const updatedPets = queryClient.getQueryData(['pets']);
+          selectLatestPet(updatedPets);
+        });
+    },
+  });
+
   const selectLatestPet = (availablePets) => {
     if (availablePets && availablePets.length > 0) {
       const latestPet = availablePets[0];
@@ -110,6 +125,17 @@ export function usePets() {
     });
   };
 
+  const handleDeletePet = (petData, options = {}) => {
+    return deletePetMutation.mutate(petData, {
+      onSuccess: (data) => {
+        if (options.onSuccess) options.onSuccess(data);
+      },
+      onError: (error) => {
+        if (options.onError) options.onError(error);
+      },
+    });
+  };
+
   return {
     pets,
     isLoading,
@@ -121,5 +147,7 @@ export function usePets() {
     isCreatingDiet: createDietMutation.isPending,
     updatePet: handleUpdatePet,
     isUpdating: updatePetMutation.isPending,
+    deletePet: handleDeletePet,
+    isDeleting: deletePetMutation.isPending,
   };
 }

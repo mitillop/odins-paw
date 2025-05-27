@@ -264,7 +264,6 @@ function PetEditForm({ pet, onClose }) {
         </div>
       </form>
 
-      {/* Loading overlay */}
       {(isUpdating || isRegeneratingDiets) && (
         <div className="fixed inset-0 flex items-center justify-center z-[9999]">
           <div className="absolute inset-0 bg-black/50"></div>
