@@ -5,9 +5,11 @@ import { createPet } from "../app/actions/pets/createPet";
 import { useForm } from "react-hook-form";
 import { uploadFile } from "../app/actions/files/uploadFile";
 import { usePets } from "../hooks/usePets";
+import { useDiets } from "../hooks/useDiets";
 
 function PetForm({ onClose }) {
   const { createNewPet, isCreating } = usePets();
+  const { regenerateDiets, isRegeneratingDiets } = useDiets();
 
   const {
     register,
@@ -70,7 +72,7 @@ function PetForm({ onClose }) {
       }
 
       if (today.getDate() < birthDate.getDate()) {
-        months = (months - 1 + 12) % 12; 
+        months = (months - 1 + 12) % 12;
       }
 
       const formattedAge = `${years}.${months}`;
@@ -101,21 +103,32 @@ function PetForm({ onClose }) {
         updatedAt: new Date().toISOString(),
         imageUrl: imgUrl,
       };
-      console.log("Pet data to be sent:", petData);
-      await createNewPet(petData, {
-        onSuccess: () => {
-          setSuccess(true);
-          reset();
-          if (onClose) {
-            setTimeout(() => {
-              onClose();
-            }, 1000);
+
+      let createdPet = null;
+
+      await new Promise((resolve, reject) => {
+        createNewPet(petData, {
+          onSuccess: async (newPet) => {
+            try {
+              createdPet = newPet;
+              reset();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          onError: (error) => {
+            setError(error.message || "Error al crear la mascota");
+            reject(error);
           }
-        },
-        onError: (err) => {
-          setError(err.message || "Error al crear la mascota");
-        }
+        });
       });
+
+      if (createdPet) {
+        await regenerateDiets(createdPet);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        onClose();
+      }
     } catch (err) {
       setError(err.message || "Error al crear la mascota");
     }
@@ -123,310 +136,451 @@ function PetForm({ onClose }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <fieldset
-        className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 ml-2 mr-8"
-        disabled={isCreating}
-      >
-        <label className="label mb-1">Nombre de la mascota</label>
-        <input
-          className={`input input-bordered w-full mb-4 ${
-            errors.name ? "input-error" : ""
-          }`}
-          placeholder="Ingresa el nombre"
-          {...register("name", {
-            required: "El nombre es obligatorio",
-            pattern: {
-              value: /^[A-Za-z][A-Za-z]*$/,
-              message: "Solo se permiten letras",
-            },
-            minLength: {
-              value: 2,
-              message: "El nombre debe tener al menos 2 caracteres",
-            },
-            maxLength: {
-              value: 30,
-              message: "El nombre no puede exceder 30 caracteres",
-            },
-          })}
-        />
-        {errors.name && (
-          <p className="text-error text-xs -mt-3 mb-2">{errors.name.message}</p>
-        )}
+      <div className="space-y-6">
+        <div>
+          <div className="bg-base-200/50 rounded-lg p-4">
+            <h4 className="font-semibold text-base mb-4 text-base-content/80">
+              Información básica
+            </h4>
 
-        <label className="label mb-1">Género</label>
-        <div className="grid grid-cols-[auto_1px_auto] items-center gap-4 mb-4">
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="female"
-              {...register("gender")}
-            />
-            <span>Hembra</span>
-            <Venus size={18} />
-          </label>
+            <div className="space-y-4">
+              <div>
+                <label className="label font-medium">
+                  <span className="label-text">Nombre de la mascota</span>
+                  <span className="label-text-alt text-error">*</span>
+                </label>
+                <input
+                  className={`input input-bordered w-full ${
+                    errors.name ? "input-error" : ""
+                  }`}
+                  placeholder="Ingresa el nombre"
+                  {...register("name", {
+                    required: "El nombre es obligatorio",
+                    pattern: {
+                      value: /^[A-Za-z][A-Za-z]*$/,
+                      message: "Solo se permiten letras",
+                    },
+                    minLength: {
+                      value: 2,
+                      message: "El nombre debe tener al menos 2 caracteres",
+                    },
+                    maxLength: {
+                      value: 30,
+                      message: "El nombre no puede exceder 30 caracteres",
+                    },
+                  })}
+                />
+                {errors.name && (
+                  <p className="text-error text-xs mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
 
-          <div className="w-px h-6 bg-gray-300" />
+              <div className="space-y-4">
+                <div>
+                  <label className="label font-medium">
+                    <span className="label-text">Género</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-6 mt-2">
+                    <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                      <input
+                        type="radio"
+                        className="radio radio-accent"
+                        value="female"
+                        {...register("gender")}
+                      />
+                      <span>Hembra</span>
+                      <Venus size={18} />
+                    </label>
 
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="male"
-              {...register("gender")}
-            />
-            <span>Macho</span>
-            <Mars size={18} />
-          </label>
-        </div>
+                    <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                      <input
+                        type="radio"
+                        className="radio radio-accent"
+                        value="male"
+                        {...register("gender")}
+                      />
+                      <span>Macho</span>
+                      <Mars size={18} />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="label font-medium">
+                    <span className="label-text">Tipo de mascota</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-6 mt-2">
+                    <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                      <input
+                        type="radio"
+                        className="radio radio-accent"
+                        value="dog"
+                        {...register("petType")}
+                      />
+                      <span>Perro</span>
+                      <Dog size={18} />
+                    </label>
 
-        <label className="label mb-1">Tipo de mascota</label>
-        <div className="grid grid-cols-[auto_1px_auto] items-center gap-4 mb-4">
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="dog"
-              {...register("petType")}
-            />
-            <span>Perro</span>
-            <Dog size={18} />
-          </label>
+                    <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                      <input
+                        type="radio"
+                        className="radio radio-accent"
+                        value="cat"
+                        {...register("petType")}
+                      />
+                      <span>Gato</span>
+                      <Cat size={18} />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <div className="w-px h-6 bg-gray-300" />
+          {/* Información de raza */}
+          <div className="bg-base-200/50 rounded-lg p-4">
+            <h4 className="font-semibold text-base mb-4 text-base-content/80">
+              Información de raza
+            </h4>
 
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="cat"
-              {...register("petType")}
-            />
-            <span>Gato</span>
-            <Cat size={18} />
-          </label>
-        </div>
+            <div className="space-y-4">
+              <div>
+                <label className="label font-medium">
+                  <span className="label-text">Tipo de raza</span>
+                  <span className="label-text-alt text-error">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-6 mt-2">
+                  <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                    <input
+                      type="radio"
+                      className="radio radio-accent"
+                      value="purebred"
+                      {...register("breedType")}
+                    />
+                    <span>Raza pura</span>
+                  </label>
 
-        <label className="label mb-1">Tipo de raza</label>
-        <div className="grid grid-cols-[auto_1px_auto] items-center gap-4 mb-4">
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="purebred"
-              {...register("breedType")}
-            />
-            <span>Raza pura</span>
-          </label>
+                  <label className="flex items-center justify-start gap-3 px-5 py-3 border rounded-lg cursor-pointer hover:bg-base-200 transition-colors">
+                    <input
+                      type="radio"
+                      className="radio radio-accent"
+                      value="mixed"
+                      {...register("breedType")}
+                    />
+                    <span>Raza mixta</span>
+                  </label>
+                </div>
+              </div>
 
-          <div className="w-px h-6 bg-gray-300" />
+              {breedType === "purebred" ? (
+                <div>
+                  <label className="label font-medium">
+                    <span className="label-text">Raza de la mascota</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <input
+                    className={`input input-bordered w-full ${
+                      errors.breed ? "input-error" : ""
+                    }`}
+                    placeholder="Ingresa la raza"
+                    {...register("breed", {
+                      required: "La raza es obligatoria",
+                      pattern: {
+                        value: /^[A-Za-z][A-Za-z ]*$/,
+                        message: "Solo se permiten letras",
+                      },
+                      minLength: {
+                        value: 2,
+                        message: "La raza debe tener al menos 2 caracteres",
+                      },
+                      maxLength: {
+                        value: 30,
+                        message: "La raza no puede exceder 30 caracteres",
+                      },
+                    })}
+                  />
+                  {errors.breed && (
+                    <p className="text-error text-xs mt-1">
+                      {errors.breed.message}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="label font-medium">
+                      <span className="label-text">Raza del padre</span>
+                      <span className="label-text-alt text-error">*</span>
+                    </label>
+                    <input
+                      className={`input input-bordered w-full ${
+                        errors.fatherBreed ? "input-error" : ""
+                      }`}
+                      placeholder="Ej: Labrador"
+                      {...register("fatherBreed", {
+                        required: "La raza del padre es obligatoria",
+                        pattern: {
+                          value: /^[A-Za-z][A-Za-z ]*$/,
+                          message: "Solo se permiten letras",
+                        },
+                      })}
+                    />
+                    {errors.fatherBreed && (
+                      <p className="text-error text-xs mt-1">
+                        {errors.fatherBreed.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="label font-medium">
+                      <span className="label-text">Raza de la madre</span>
+                      <span className="label-text-alt text-error">*</span>
+                    </label>
+                    <input
+                      className={`input input-bordered w-full ${
+                        errors.motherBreed ? "input-error" : ""
+                      }`}
+                      placeholder="Ej: Golden Retriever"
+                      {...register("motherBreed", {
+                        required: "La raza de la madre es obligatoria",
+                        pattern: {
+                          value: /^[A-Za-z][A-Za-z ]*$/,
+                          message: "Solo se permiten letras",
+                        },
+                      })}
+                    />
+                    {errors.motherBreed && (
+                      <p className="text-error text-xs mt-1">
+                        {errors.motherBreed.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-          <label className="flex items-center gap-2 px-4">
-            <input
-              type="radio"
-              className="radio radio-accent"
-              value="mixed"
-              {...register("breedType")}
-            />
-            <span>Raza mixta</span>
-          </label>
-        </div>
+          <div className="bg-base-200/50 rounded-lg p-4">
+            <h4 className="font-semibold text-base mb-4 text-base-content/80">
+              Información física y de salud
+            </h4>
 
-        {breedType === "purebred" ? (
-          <>
-            <label className="label mb-1">Raza de la mascota</label>
-            <input
-              className={`input input-bordered w-full mb-4 ${
-                errors.breed ? "input-error" : ""
-              }`}
-              placeholder="Ingresa la raza"
-              {...register("breed", {
-                required: "La raza es obligatoria",
-                pattern: {
-                  value: /^[A-Za-z][A-Za-z ]*$/,
-                  message: "Solo se permiten letras",
-                },
-                minLength: {
-                  value: 2,
-                  message: "La raza debe tener al menos 2 caracteres",
-                },
-                maxLength: {
-                  value: 30,
-                  message: "La raza no puede exceder 30 caracteres",
-                },
-              })}
-            />
-            {errors.breed && (
-              <p className="text-error text-xs -mt-3 mb-2">
-                {errors.breed.message}
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label font-medium">
+                    <span className="label-text">Fecha de nacimiento</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    className={`input input-bordered w-full ${
+                      errors.birthDate ? "input-error" : ""
+                    }`}
+                    {...register("birthDate", {
+                      required: "La fecha de nacimiento es obligatoria",
+                      validate: (value) => {
+                        const date = new Date(value);
+                        const min = new Date("2002-01-01");
+                        const max = new Date("2025-05-29");
+                        return (
+                          (date >= min && date <= max) ||
+                          "Fecha fuera del rango permitido"
+                        );
+                      },
+                    })}
+                  />
+                  {errors.birthDate && (
+                    <p className="text-error text-xs mt-1">
+                      {errors.birthDate.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="label font-medium">
+                    <span className="label-text">Peso</span>
+                    <span className="label-text-alt text-error">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      className={`input input-bordered w-full pr-10 ${
+                        errors.weight ? "input-error" : ""
+                      }`}
+                      placeholder="Ingresa el peso"
+                      {...register("weight", {
+                        required: "El peso es obligatorio",
+                        min: {
+                          value: 1,
+                          message: "El peso mínimo es 1 kg",
+                        },
+                        max: {
+                          value: 80,
+                          message: "El peso máximo es 80 kg",
+                        },
+                      })}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                      kg
+                    </span>
+                  </div>
+                  {errors.weight && (
+                    <p className="text-error text-xs mt-1">
+                      {errors.weight.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="label font-medium">
+                  <span className="label-text">Nivel de actividad</span>
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={25}
+                  className="range w-full"
+                  {...register("activityLevel", {
+                    valueAsNumber: true,
+                  })}
+                />
+                <div className="flex justify-between px-2 mt-1">
+                  <span
+                    className={`text-xs ${
+                      activityLevel <= 25
+                        ? "text-primary font-medium"
+                        : "text-base-content/70"
+                    }`}
+                  >
+                    Bajo
+                  </span>
+                  <span
+                    className={`text-xs ${
+                      activityLevel > 25 && activityLevel <= 50
+                        ? "text-primary font-medium"
+                        : "text-base-content/70"
+                    }`}
+                  >
+                    Moderado
+                  </span>
+                  <span
+                    className={`text-xs ${
+                      activityLevel > 50 && activityLevel <= 75
+                        ? "text-primary font-medium"
+                        : "text-base-content/70"
+                    }`}
+                  >
+                    Alto
+                  </span>
+                  <span
+                    className={`text-xs ${
+                      activityLevel > 75
+                        ? "text-primary font-medium"
+                        : "text-base-content/70"
+                    }`}
+                  >
+                    Muy alto
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="label font-medium">
+                  <span className="label-text">Condiciones médicas</span>
+                </label>
+                <textarea
+                  className="textarea textarea-bordered w-full"
+                  placeholder="Describe cualquier condición médica relevante"
+                  rows={3}
+                  {...register("otherConditions")}
+                />
+                <p className="text-xs text-base-content/70 mt-1">
+                  Si no hay condiciones médicas, puedes dejar este campo vacío
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-base-200/50 rounded-lg p-4">
+            <h4 className="font-semibold text-base mb-4 text-base-content/80">
+              Foto de la mascota
+            </h4>
+
+            <div>
+              <input
+                type="file"
+                className="file-input file-input-bordered w-full"
+                accept="image/*"
+                {...register("photo")}
+              />
+              <p className="text-xs text-base-content/70 mt-2">
+                Formato permitido: JPG, PNG. Tamaño máximo: 2MB
               </p>
-            )}
-          </>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="label mb-2">Raza del padre</label>
-              <input
-                className={`input input-bordered w-full ${
-                  errors.fatherBreed ? "input-error" : ""
-                }`}
-                placeholder="Padre"
-                {...register("fatherBreed", {
-                  required: "La raza del padre es obligatoria",
-                  pattern: {
-                    value: /^[A-Za-z][A-Za-z ]*$/,
-                    message: "Solo se permiten letras",
-                  },
-                })}
-              />
-              {errors.fatherBreed && (
-                <p className="text-error text-xs mt-1">
-                  {errors.fatherBreed.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="label mb-2">Raza de la madre</label>
-              <input
-                className={`input input-bordered w-full ${
-                  errors.motherBreed ? "input-error" : ""
-                }`}
-                placeholder="Madre"
-                {...register("motherBreed", {
-                  required: "La raza de la madre es obligatoria",
-                  pattern: {
-                    value: /^[A-Za-z][A-Za-z ]*$/,
-                    message: "Solo se permiten letras",
-                  },
-                })}
-              />
-              {errors.motherBreed && (
-                <p className="text-error text-xs mt-1">
-                  {errors.motherBreed.message}
-                </p>
-              )}
             </div>
           </div>
-        )}
 
-        <label className="label mb-1">Fecha de nacimiento</label>
-        <input
-          type="date"
-          className={`input input-bordered w-full mb-4 ${
-            errors.birthDate ? "input-error" : ""
-          }`}
-          {...register("birthDate", {
-            required: "La fecha de nacimiento es obligatoria",
-            validate: (value) => {
-              const date = new Date(value);
-              const min = new Date("2002-01-01");
-              const max = new Date("2025-05-29");
-              return (
-                (date >= min && date <= max) ||
-                "Fecha fuera del rango permitido"
-              );
-            },
-          })}
-        />
-        {errors.birthDate && (
-          <p className="text-error text-xs -mt-3 mb-2">
-            {errors.birthDate.message}
-          </p>
-        )}
-
-        <label className="label mb-1">Peso</label>
-        <div className="relative mb-4">
-          <input
-            type="number"
-            className={`input input-bordered w-full pr-10 ${
-              errors.weight ? "input-error" : ""
-            }`}
-            placeholder="Ingresa el peso en kg"
-            {...register("weight", {
-              required: "El peso es obligatorio",
-              min: {
-                value: 1,
-                message: "El peso mínimo es 1 kg",
-              },
-              max: {
-                value: 80,
-                message: "El peso máximo es 80 kg",
-              },
-            })}
-          />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-            kg
-          </span>
-          {errors.weight && (
-            <p className="text-error text-xs mt-1">{errors.weight.message}</p>
+          {error && (
+            <div className="alert alert-error">
+              <span>{error}</span>
+            </div>
           )}
-        </div>
 
-        <label className="label mb-1">Nivel de actividad</label>
-        <div className="mb-4">
-          <input
-            type="range"
-            min={0}
-            max={100}
-            step={25}
-            className="range"
-            {...register("activityLevel", {
-              valueAsNumber: true,
-            })}
-          />
-          <div className="flex justify-between px-2 mt-1 text-xs text-center">
-            <span>Perezoso</span>
-            <span>Juguetón</span>
-            <span>Hiperactivo</span>
-          </div>
-        </div>
-
-        <label className="label mb-1">Condiciones médicas</label>
-        <div className="mb-3">
-          <textarea
-            className="textarea textarea-bordered w-full"
-            placeholder="Ej. Epilepsia, hipotiroidismo, etc."
-            rows={2}
-            {...register("otherConditions")}
-          />
-        </div>
-
-        <label className="label mb-1">Foto de mascota</label>
-        <input
-          type="file"
-          className="file-input"
-          accept="image/*"
-          {...register("photo")}
-        />
-        <label className="label">Tamaño maximo 2MB</label>
-
-        {error && (
-          <div className="alert alert-error mb-4">
-            <span>{error}</span>
-          </div>
-        )}
-
-        {success && (
-          <div className="alert alert-success mb-4">
-            <span>Mascota registrada exitosamente</span>
-          </div>
-        )}
-
-        <button
-          type="submit"
-          className="btn btn-primary w-full mt-2"
-          disabled={isCreating || formSubmitting}
-        >
-          {isCreating ? (
-            <>
-              <span className="loading loading-spinner loading-sm"></span>
-              Guardando...
-            </>
-          ) : (
-            "Guardar"
+          {success && (
+            <div className="alert alert-success">
+              <span>Mascota registrada exitosamente</span>
+            </div>
           )}
-        </button>
-      </fieldset>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={onClose}
+              disabled={isCreating || isRegeneratingDiets}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={isCreating || isRegeneratingDiets}
+            >
+              {isCreating || isRegeneratingDiets ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  {isCreating ? "Guardando mascota..." : "Generando dietas..."}
+                </>
+              ) : (
+                "Guardar mascota"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {(isCreating || isRegeneratingDiets) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-base-100 p-8 rounded-lg shadow-lg flex flex-col items-center gap-4">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <p className="text-lg font-medium">
+              {isCreating ? "Registrando mascota..." : "Generando dietas personalizadas..."}
+            </p>
+            <p className="text-sm text-base-content/70">
+              {isCreating 
+                ? "Estamos guardando la información de tu mascota" 
+                : "Estamos calculando las dietas óptimas para tu mascota"}
+            </p>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

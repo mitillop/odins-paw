@@ -3,14 +3,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useAppSelector } from "../libs/hooks";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import {
-  History,
-  PawPrint,
-  Cat,
-  Dog,
-  Menu,
-  X,
-} from "lucide-react";
+import { History, PawPrint, Cat, Dog, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePets } from "../hooks/usePets";
 import { usePathname } from "next/navigation";
@@ -40,23 +33,22 @@ function PetNavbar() {
         </Link>
       </div>
 
-      {/* Mascota actual - Desktop */}
       {!isHistoryPage && selectedPet && (
         <div className="navbar-center hidden lg:flex">
           <div className="flex items-center gap-3 px-4 py-2 bg-primary/10 rounded-lg border border-primary/20">
-            <div className="flex items-center gap-2">
-              {selectedPet.type === "Perro" ? (
-                <Dog size={20} className="text-primary" />
-              ) : (
-                <Cat size={20} className="text-primary" />
-              )}
-              <div className="flex flex-col">
-                <span className="text-xs text-base-content/70 font-medium">
-                  Mascota actual
-                </span>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-xs text-base-content/70 font-medium">
+                Mascota actual
+              </span>
+              <div className="flex items-center gap-2">
                 <span className="font-semibold text-primary">
                   {selectedPet.name}
                 </span>
+                {selectedPet.type === "Perro" ? (
+                  <Dog size={20} className="text-primary" />
+                ) : (
+                  <Cat size={20} className="text-primary" />
+                )}
               </div>
             </div>
           </div>
@@ -123,7 +115,9 @@ function PetNavbar() {
               </div>
             )}
 
-            {!isHistoryPage && selectedPet && <div className="divider my-2"></div>}
+            {!isHistoryPage && selectedPet && (
+              <div className="divider my-2"></div>
+            )}
 
             {/* Navegación - Mobile */}
             <div className="space-y-2">

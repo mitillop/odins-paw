@@ -26,8 +26,12 @@ function DietsPanel() {
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon
+                iconNode={bowlOverflow}
+                size={30}
+                className="text-base-content/70"
+              />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               No tienes mascotas registradas
@@ -49,8 +53,12 @@ function DietsPanel() {
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon
+                iconNode={bowlOverflow}
+                size={30}
+                className="text-base-content/70"
+              />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               Ninguna mascota seleccionada
@@ -71,10 +79,20 @@ function DietsPanel() {
           <div className="flex items-center justify-center bg-base-200 p-3 rounded-lg mb-4">
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="skeleton h-32 w-full"></div>
-            <div className="skeleton h-32 w-full"></div>
-            <div className="skeleton h-32 w-full"></div>
+          <div className="text-center py-8">
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon
+                iconNode={bowlOverflow}
+                size={30}
+                className="text-base-content/70"
+              />
+            </div>
+            <h3 className="font-medium text-base-content/70 mb-2">
+              Regenerando dietas...
+            </h3>
+            <p className="text-sm text-base-content/50">
+              Por favor, espera un momento
+            </p>
           </div>
         </div>
       </div>
@@ -95,7 +113,7 @@ function DietsPanel() {
       </div>
     );
   }
-  
+
   if (!diets || diets.length === 0) {
     return (
       <div className="card w-full bg-white shadow-md">
@@ -105,13 +123,18 @@ function DietsPanel() {
           </div>
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+              <Icon
+                iconNode={bowlOverflow}
+                size={24}
+                className="text-base-content/40"
+              />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               No hay dietas disponibles
             </h3>
             <p className="text-sm text-base-content/50">
-              Las dietas aparecerán aquí cuando estén disponibles para {selectedPet.name}
+              Las dietas aparecerán aquí cuando estén disponibles para{" "}
+              {selectedPet.name}
             </p>
           </div>
         </div>
@@ -123,17 +146,19 @@ function DietsPanel() {
     <div className="card w-full bg-white shadow-md">
       <div className="card-body p-6">
         <div className="flex items-center justify-center bg-base-200 p-3 rounded-lg mb-6">
-          <h2 className="text-xl font-bold mr-2">Dietas de {selectedPet.name}</h2>
+          <h2 className="text-xl font-bold mr-2">
+            Dietas de {selectedPet.name}
+          </h2>
           <Icon iconNode={bowlOverflow} size={20} className="text-primary" />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {diets.map((diet) => (
             <div
               key={diet.id}
               className={`card bg-base-100 border cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                selectedDiet?.id === diet.id 
-                  ? "border-primary bg-primary/5 shadow-md" 
+                selectedDiet?.id === diet.id
+                  ? "border-primary bg-primary/5 shadow-md"
                   : "border-base-300 hover:border-primary/50"
               }`}
               onClick={() => {
@@ -147,23 +172,29 @@ function DietsPanel() {
             >
               <div className="card-body p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className={`font-semibold text-lg ${
-                    selectedDiet?.id === diet.id ? "text-primary" : "text-base-content"
-                  }`}>
+                  <h3
+                    className={`font-semibold text-lg ${
+                      selectedDiet?.id === diet.id
+                        ? "text-primary"
+                        : "text-base-content"
+                    }`}
+                  >
                     {diet.name}
                   </h3>
                   {selectedDiet?.id === diet.id && (
                     <div className="w-3 h-3 bg-primary rounded-full"></div>
                   )}
                 </div>
-                
+
                 <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
                   {diet.description}
                 </p>
-                
+
                 <div className="flex justify-between items-center">
                   {selectedDiet?.id === diet.id && (
-                    <span className="text-xs text-primary font-medium">Seleccionada</span>
+                    <span className="text-xs text-primary font-medium">
+                      Seleccionada
+                    </span>
                   )}
                   <div className="ml-auto">
                     <DietPDFButton

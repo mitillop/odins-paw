@@ -36,22 +36,18 @@ export enum PetType {
   }
   
   export interface Mascota {
-    id: bigint;
-    userId: bigint;
+    id: string;
     name: string;
-    age: number;
-    type: PetType;
-    weight: number;
+    sex: string;
+    type: string;
     breed: string;
-    sex: Sex;
+    age: number;
+    weight: number | null;
     activityLevel: string;
-    medicalConditions?: string;
-    diets?: Diet[];
-    foodPortions?: FoodPortion[];
-    chatHistory?: ChatHistory[];
-    createdAt: Date;
-    updatedAt: Date;
-    imageUrl?: string;
+    medicalConditions: string;
+    imageUrl?: string | null;
+    createdAt: string;
+    updatedAt: string;
   }
   
   export interface ChatHistory {
