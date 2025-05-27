@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
 import { usePets } from "../hooks/usePets";
 import { CirclePlus, Cat, Dog, Settings, X } from "lucide-react";
@@ -9,6 +9,9 @@ function PetManagement() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const { pets, isLoading, handleSelectPet, createNewPet, isCreating } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Memoizar el ID de la mascota seleccionada para comparaciones más eficientes
+  const selectedPetId = useMemo(() => selectedPet?.id, [selectedPet]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -67,7 +70,7 @@ function PetManagement() {
                   <li
                     key={pet.id}
                     className={`p-3 rounded-lg border transition-all duration-200 cursor-pointer hover:shadow-md ${
-                      selectedPet?.id === pet.id
+                      selectedPetId === pet.id
                         ? "bg-primary/10 border-primary/30 shadow-sm"
                         : "bg-base-100 border-base-300 hover:bg-base-50"
                     }`}
@@ -78,18 +81,18 @@ function PetManagement() {
                         {pet.type === "Perro" ? (
                           <Dog 
                             size={32} 
-                            className={selectedPet?.id === pet.id ? "text-primary" : "text-base-content/70"} 
+                            className={selectedPetId === pet.id ? "text-primary" : "text-base-content/70"} 
                           />
                         ) : (
                           <Cat 
                             size={32} 
-                            className={selectedPet?.id === pet.id ? "text-primary" : "text-base-content/70"} 
+                            className={selectedPetId === pet.id ? "text-primary" : "text-base-content/70"} 
                           />
                         )}
                         <div className="flex flex-col">
                           <span 
                             className={`font-medium ${
-                              selectedPet?.id === pet.id ? "text-primary" : "text-base-content"
+                              selectedPetId === pet.id ? "text-primary" : "text-base-content"
                             }`}
                           >
                             {pet.name}
@@ -99,7 +102,7 @@ function PetManagement() {
                           </span>
                         </div>
                       </div>
-                      {selectedPet?.id === pet.id && (
+                      {selectedPetId === pet.id && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-primary font-medium">Seleccionada</span>
                           <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -128,18 +131,17 @@ function PetManagement() {
         </div>
       </div>
 
-      {/* Modal para agregar mascota */}
       {isModalOpen && (
         <dialog
-          className="modal modal-open"
+          className="modal modal-open modal-bottom sm:modal-middle"
           onClick={(e) => {
             if (e.target.classList.contains("modal")) {
               closeModal();
             }
           }}
         >
-          <div className="modal-box max-w-md mx-auto">
-            <div className="flex justify-between items-center mb-6">
+          <div className="modal-box relative max-w-2xl mx-auto bg-base-100">
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-base-100 pt-2 z-10">
               <h3 className="font-bold text-xl text-primary">
                 Registrar Nueva Mascota
               </h3>
@@ -152,11 +154,13 @@ function PetManagement() {
                 <X size={18} />
               </button>
             </div>
-            <PetForm
-              onClose={closeModal}
-              onSubmit={handleCreatePet}
-              isSubmitting={isCreating}
-            />
+            <div className="overflow-y-auto max-h-[80vh] pb-4">
+              <PetForm
+                onClose={closeModal}
+                onSubmit={handleCreatePet}
+                isSubmitting={isCreating}
+              />
+            </div>
           </div>
         </dialog>
       )}

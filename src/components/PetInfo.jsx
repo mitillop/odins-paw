@@ -1,19 +1,23 @@
 "use client";
 import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
-import { Cat, Dog, VenusAndMars, HeartPulse, Weight, Zap, CalendarHeart, Squirrel } from "lucide-react";
+import { Cat, Dog, VenusAndMars, HeartPulse, Weight, Zap, CalendarHeart, Squirrel, X } from "lucide-react";
 import { deletePet as deletePetAction } from "../libs/features/pet/petSlice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePet as deletePetAPI } from "../app/actions/pets/deletePet";
 import { usePets } from "../hooks/usePets";
+import PetEditForm from "./PetEditForm";
 
 function PetInfo() {
   const dispatch = useAppDispatch();
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);  const queryClient = useQueryClient();
-  const { selectLatestPet } = usePets();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { selectLatestPet, pets } = usePets();
 
-  const deleteMutation = useMutation({    mutationFn: deletePetAPI,
+  const deleteMutation = useMutation({
+    mutationFn: deletePetAPI,
     onSuccess: (deletedPet) => {
       dispatch(deletePetAction(deletedPet));
       
@@ -29,8 +33,6 @@ function PetInfo() {
       setIsConfirmModalOpen(false);
     }
   });
-
-  const { pets } = usePets();
 
   if (!pets || pets.length === 0) {
     return (
@@ -67,12 +69,21 @@ function PetInfo() {
       </div>
     );
   }
+
   const handleDeletePet = () => {
     setIsConfirmModalOpen(true);
   };
 
   const confirmDelete = () => {
     deleteMutation.mutate(selectedPet);
+  };
+
+  const handleEditPet = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
   };
 
   return (
@@ -154,17 +165,22 @@ function PetInfo() {
         
         <div className="card-actions justify-between">
           <button 
-            className="btn btn-primary btn-sm"
+            className="btn btn-error btn-sm"
             onClick={handleDeletePet}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
           </button>
-          <button className="btn btn-primary btn-sm">
+          <button 
+            className="btn btn-primary btn-sm"
+            onClick={handleEditPet}
+          >
             Editar información
           </button>
         </div>
-      </div>      {isConfirmModalOpen && (
+      </div>
+
+      {isConfirmModalOpen && (
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">Confirmar eliminación</h3>
@@ -184,6 +200,29 @@ function PetInfo() {
               >
                 {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
               </button>
+            </div>
+          </div>
+        </dialog>
+      )}      {isEditModalOpen && (
+        <dialog className="modal modal-open modal-bottom sm:modal-middle">
+          <div className="modal-box max-w-2xl mx-auto bg-base-100">
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-base-100 pt-2 z-10">
+              <h3 className="font-bold text-xl text-primary">
+                Editar información de {selectedPet.name}
+              </h3>
+              <button
+                onClick={handleCloseEditModal}
+                className="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors duration-200"
+                aria-label="Cerrar modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[80vh] pb-4">
+              <PetEditForm
+                pet={selectedPet}
+                onClose={handleCloseEditModal}
+              />
             </div>
           </div>
         </dialog>

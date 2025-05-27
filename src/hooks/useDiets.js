@@ -1,15 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getDiets } from "../app/actions/pets/getDiets";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
 import { useEffect } from "react";
 import { selectDiet } from "../libs/features/pet/petSlice";
+import { deleteDiets } from "../app/actions/pets/deleteDiets";
+import { createPetDiet } from "../app/actions/pets/createDiets";
 
 export function useDiets() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const selectedDiet = useAppSelector((state) => state.pet.selectedDiet);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const {
     data: diets,
@@ -24,6 +27,22 @@ export function useDiets() {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });  
+
+  const deleteDietsMutation = useMutation({
+    mutationFn: (petId) => deleteDiets(petId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["diets"] });
+      dispatch(selectDiet(null));
+    }
+  });
+
+  const createDietMutation = useMutation({
+    mutationFn: createPetDiet,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["diets"] });
+    }
+  });
+
   useEffect(() => {
     if (diets && diets.length > 0 && !selectedDiet) {
       const serializedDiet = {
@@ -35,9 +54,27 @@ export function useDiets() {
     }
   }, [diets, selectedDiet, dispatch]);
 
+  const handleRegenerateDiets = async (petData) => {
+    try {
+      // Eliminamos las dietas actuales
+      await deleteDietsMutation.mutateAsync(petData.id);
+      
+      // Creamos las nuevas dietas
+      await createDietMutation.mutateAsync(petData);
+      
+      // La mascota seleccionada ya está manejada en el updatePetMutation
+      return true;
+    } catch (error) {
+      console.error("Error regenerating diets:", error);
+      return false;
+    }
+  };
+
   return {
     diets,
     isLoading,
     error,
+    regenerateDiets: handleRegenerateDiets,
+    isRegeneratingDiets: deleteDietsMutation.isPending || createDietMutation.isPending
   };
 }
