@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from "../libs/hooks";
 import { usePets } from "../hooks/usePets";
 import { CirclePlus, Cat, Dog, Settings, X } from "lucide-react";
 import PetForm from "./PetForm";
+import ModalPortal from "./ModalPortal";
 
 function PetManagement() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
@@ -132,37 +133,42 @@ function PetManagement() {
       </div>
 
       {isModalOpen && (
-        <dialog
-          className="modal modal-open modal-bottom sm:modal-middle"
-          onClick={(e) => {
-            if (e.target.classList.contains("modal")) {
-              closeModal();
-            }
-          }}
-        >
-          <div className="modal-box relative max-w-2xl mx-auto bg-base-100">
-            <div className="flex justify-between items-center mb-6 sticky top-0 bg-base-100 pt-2 z-10">
-              <h3 className="font-bold text-xl text-primary">
-                Registrar Nueva Mascota
-              </h3>
-              <button
-                onClick={closeModal}
-                className="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors duration-200"
-                disabled={isCreating}
-                aria-label="Cerrar modal"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className="overflow-y-auto max-h-[80vh] pb-4">
-              <PetForm
-                onClose={closeModal}
-                onSubmit={handleCreatePet}
-                isSubmitting={isCreating}
-              />
+        <ModalPortal>
+          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+            <div 
+              className="absolute inset-0 bg-black/50" 
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  closeModal();
+                }
+              }}
+            ></div>
+            <div className="relative w-full max-w-2xl mx-auto bg-base-100 rounded-lg shadow-xl mt-16 sm:mt-0">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold text-xl text-primary">
+                    Registrar Nueva Mascota
+                  </h3>
+                  <button
+                    onClick={closeModal}
+                    className="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors duration-200"
+                    disabled={isCreating}
+                    aria-label="Cerrar modal"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="max-h-[calc(100vh-16rem)] overflow-y-auto">
+                  <PetForm
+                    onClose={closeModal}
+                    onSubmit={handleCreatePet}
+                    isSubmitting={isCreating}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </dialog>
+        </ModalPortal>
       )}
     </>
   );

@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePet as deletePetAPI } from "../app/actions/pets/deletePet";
 import { usePets } from "../hooks/usePets";
 import PetEditForm from "./PetEditForm";
+import ModalPortal from "./ModalPortal";
 
 function PetInfo() {
   const dispatch = useAppDispatch();
@@ -203,29 +204,36 @@ function PetInfo() {
             </div>
           </div>
         </dialog>
-      )}      {isEditModalOpen && (
-        <dialog className="modal modal-open modal-bottom sm:modal-middle">
-          <div className="modal-box max-w-2xl mx-auto bg-base-100">
-            <div className="flex justify-between items-center mb-6 sticky top-0 bg-base-100 pt-2 z-10">
-              <h3 className="font-bold text-xl text-primary">
-                Editar información de {selectedPet.name}
-              </h3>
-              <button
-                onClick={handleCloseEditModal}
-                className="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors duration-200"
-                aria-label="Cerrar modal"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className="overflow-y-auto max-h-[80vh] pb-4">
-              <PetEditForm
-                pet={selectedPet}
-                onClose={handleCloseEditModal}
-              />
+      )}
+
+      {isEditModalOpen && (
+        <ModalPortal>
+          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+            <div className="absolute inset-0 bg-black/50" onClick={handleCloseEditModal}></div>
+            <div className="relative w-full max-w-2xl mx-auto bg-base-100 rounded-lg shadow-xl mt-16 sm:mt-0">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold text-xl text-primary">
+                    Editar información de {selectedPet.name}
+                  </h3>
+                  <button
+                    onClick={handleCloseEditModal}
+                    className="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors duration-200"
+                    aria-label="Cerrar modal"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="max-h-[calc(100vh-16rem)] overflow-y-auto">
+                  <PetEditForm
+                    pet={selectedPet}
+                    onClose={handleCloseEditModal}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </dialog>
+        </ModalPortal>
       )}
     </div>
   );
