@@ -1,6 +1,6 @@
 'use client';
 
-import { HeartPulse, BrainCircuit, Dog } from "lucide-react";
+import { HeartPulse, BrainCircuit } from "lucide-react";
 import Chat from "./Chat";
 import { useDiets } from "../hooks/useDiets";
 import { usePets } from "../hooks/usePets";
@@ -38,7 +38,7 @@ function ChatTips() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <Dog size={26} className="text-base-content/70" />
+              <BrainCircuit size={26} className="text-base-content/70" />
             </div>
             <h3 className="text-lg font-semibold text-base-content/70 mb-2">
               Ninguna mascota seleccionada
