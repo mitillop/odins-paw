@@ -5,9 +5,11 @@ import { createPet } from "../app/actions/pets/createPet";
 import { useForm } from "react-hook-form";
 import { uploadFile } from "../app/actions/files/uploadFile";
 import { usePets } from "../hooks/usePets";
+import { useDiets } from "../hooks/useDiets";
 
 function PetForm({ onClose }) {
   const { createNewPet, isCreating } = usePets();
+  const { regenerateDiets, isRegeneratingDiets } = useDiets();
 
   const {
     register,
@@ -101,21 +103,32 @@ function PetForm({ onClose }) {
         updatedAt: new Date().toISOString(),
         imageUrl: imgUrl,
       };
-      console.log("Pet data to be sent:", petData);
-      await createNewPet(petData, {
-        onSuccess: () => {
-          setSuccess(true);
-          reset();
-          if (onClose) {
-            setTimeout(() => {
-              onClose();
-            }, 1000);
+
+      let createdPet = null;
+
+      await new Promise((resolve, reject) => {
+        createNewPet(petData, {
+          onSuccess: async (newPet) => {
+            try {
+              createdPet = newPet;
+              reset();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          onError: (error) => {
+            setError(error.message || "Error al crear la mascota");
+            reject(error);
           }
-        },
-        onError: (err) => {
-          setError(err.message || "Error al crear la mascota");
-        },
+        });
       });
+
+      if (createdPet) {
+        await regenerateDiets(createdPet);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        onClose();
+      }
     } catch (err) {
       setError(err.message || "Error al crear la mascota");
     }
@@ -526,22 +539,49 @@ function PetForm({ onClose }) {
             </div>
           )}
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full"
-            disabled={isCreating || formSubmitting}
-          >
-            {isCreating ? (
-              <>
-                <span className="loading loading-spinner loading-sm"></span>
-                Guardando...
-              </>
-            ) : (
-              "Guardar mascota"
-            )}
-          </button>
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={onClose}
+              disabled={isCreating || isRegeneratingDiets}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={isCreating || isRegeneratingDiets}
+            >
+              {isCreating || isRegeneratingDiets ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  {isCreating ? "Guardando mascota..." : "Generando dietas..."}
+                </>
+              ) : (
+                "Guardar mascota"
+              )}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Loading overlay */}
+      {(isCreating || isRegeneratingDiets) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-base-100 p-8 rounded-lg shadow-lg flex flex-col items-center gap-4">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <p className="text-lg font-medium">
+              {isCreating ? "Registrando mascota..." : "Generando dietas personalizadas..."}
+            </p>
+            <p className="text-sm text-base-content/70">
+              {isCreating 
+                ? "Estamos guardando la información de tu mascota" 
+                : "Estamos calculando las dietas óptimas para tu mascota"}
+            </p>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
