@@ -48,7 +48,6 @@ function PetManagement() {
             <Settings className="text-primary" size={20} />
           </div>
 
-          {/* Botón para agregar mascota */}
           <button
             onClick={openModal}
             className="w-full btn btn-primary mb-4 hover:bg-primary-focus transition-all duration-200"
@@ -58,7 +57,6 @@ function PetManagement() {
             <span>{isCreating ? "Creando..." : "Agregar Nueva Mascota"}</span>
           </button>
 
-          {/* Lista de mascotas */}
           {pets && pets.length > 0 ? (
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-base-content/70 mb-2">
@@ -116,7 +114,7 @@ function PetManagement() {
             <div className="text-center py-8">
               <div className="mb-4">
                 <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CirclePlus size={32} className="text-base-content/40" />
+                  <CirclePlus size={32} className="text-base-content/70" />
                 </div>
                 <h3 className="font-medium text-base-content/70 mb-2">
                   No tienes mascotas registradas

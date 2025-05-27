@@ -44,13 +44,9 @@ export async function POST(req) {
       onFinish: async (completion) => {
         try {
           const fullContent = completion.text;
-          // Generate a simple title based on the first message or content
           const userMessage = messages[messages.length - 1]?.content || "Conversación";
-          const title = userMessage.length > 50 
-            ? userMessage.substring(0, 47) + "..." 
-            : userMessage;
+          const title = userMessage 
 
-          // Store in database
           await prisma.chatHistory.create({
             data: {
               userId: existingUser.id,

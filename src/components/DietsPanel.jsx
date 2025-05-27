@@ -26,8 +26,8 @@ function DietsPanel() {
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon iconNode={bowlOverflow} size={30} className="text-base-content/70" />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               No tienes mascotas registradas
@@ -49,8 +49,8 @@ function DietsPanel() {
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon iconNode={bowlOverflow} size={30} className="text-base-content/70" />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               Ninguna mascota seleccionada
@@ -104,8 +104,8 @@ function DietsPanel() {
             <h2 className="text-xl font-bold">Dietas</h2>
           </div>
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Icon iconNode={bowlOverflow} size={24} className="text-base-content/40" />
+            <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon iconNode={bowlOverflow} size={30} className="text-base-content/70" />
             </div>
             <h3 className="font-medium text-base-content/70 mb-2">
               No hay dietas disponibles

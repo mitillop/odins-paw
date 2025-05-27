@@ -27,14 +27,6 @@ export default function LandingPage() {
       fontFamily: 'inherit', // Use your app's font
     },
     elements: {
-      rootBox: {
-        background: 'linear-gradient(135deg, #fef3e2 0%, #fef9e7 100%)', // Orange/amber gradient background
-      },
-      card: {
-        background: '#ffffff',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        border: '1px solid #f3f4f6',
-      },
       headerTitle: {
         color: '#ea580c', // Orange-600 for titles
         fontSize: '1.5rem',
@@ -134,7 +126,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-      {/* Navigation */}
       <nav className="navbar bg-base-100/80 backdrop-blur-md shadow-lg fixed top-0 z-50">
         <div className="navbar-start">
           <div className="flex items-center space-x-2">
@@ -144,13 +135,13 @@ export default function LandingPage() {
             <span className="text-xl font-bold text-primary">Odin's Paw</span>
           </div>
         </div>
-        <div className="navbar-end space-x-2">
-          <SignInButton mode="modal" afterSignInUrl="/dashboard" appearance={clerkAppearance}>
+        <div className="navbar-end  space-x-2">
+          <SignInButton mode="modal" appearance={clerkAppearance}>
             <button className="btn btn-ghost btn-sm">
               Iniciar Sesión
             </button>
           </SignInButton>
-          <SignUpButton mode="modal" afterSignUpUrl="/dashboard" appearance={clerkAppearance}>
+          <SignUpButton mode="modal" appearance={clerkAppearance}>
             <button className="btn btn-primary btn-sm">
               Registrarse
             </button>
@@ -158,7 +149,6 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="hero min-h-screen pt-16">
         <div className="hero-content text-center max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -196,7 +186,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 bg-white/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -204,7 +193,7 @@ export default function LandingPage() {
               Todo lo que necesitas para tu mascota
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Herramientas profesionales para el cuidado integral de tus compañeros
+              Herramientas inteligentes para el cuidado integral de tus compañeros
             </p>
           </div>
           
@@ -214,7 +203,7 @@ export default function LandingPage() {
                 <div className="text-5xl mb-4">📋</div>
                 <h3 className="card-title justify-center text-xl mb-2">Planes Personalizados</h3>
                 <p className="text-gray-600">
-                  Crea planes de cuidado únicos basados en la raza, edad y necesidades específicas de tu mascota.
+                  Crea planes de alimentación únicos basados en las necesidades específicas de tu mascota.
                 </p>
               </div>
             </div>
@@ -224,7 +213,7 @@ export default function LandingPage() {
                 <div className="text-5xl mb-4">🩺</div>
                 <h3 className="card-title justify-center text-xl mb-2">Seguimiento de Salud</h3>
                 <p className="text-gray-600">
-                  Monitorea vacunas, medicamentos y citas veterinarias con recordatorios automáticos.
+                  Monitorea la informacion de tu mascota, como peso, edad, condiciones de salud, etc.
                 </p>
               </div>
             </div>
@@ -232,9 +221,9 @@ export default function LandingPage() {
             <div className="card bg-base-100 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
               <div className="card-body text-center">
                 <div className="text-5xl mb-4">💬</div>
-                <h3 className="card-title justify-center text-xl mb-2">Chat con Expertos</h3>
+                <h3 className="card-title justify-center text-xl mb-2">Atencion inteligente para tu mascota</h3>
                 <p className="text-gray-600">
-                  Accede a consejos profesionales y resuelve dudas sobre nutrición y comportamiento.
+                  Accede a consejos de agentes inteligentes y resuelve dudas sobre nutrición y comportamiento.
                 </p>
               </div>
             </div>
@@ -242,7 +231,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="py-20 bg-gradient-to-r from-orange-500 to-amber-500 text-white">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 text-center">

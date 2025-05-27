@@ -18,7 +18,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
     }
   };
 
-  // Función para obtener el nombre de la categoría
   const getCategoryLabel = (category) => {
     switch (category) {
       case "Preguntas_Generales":
@@ -32,7 +31,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
     }
   };
 
-  // Función para formatear la fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
@@ -52,7 +50,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
 
   // Función para formatear el contenido de la respuesta
   const formatResponse = (content) => {
-    // Dividir por líneas y procesar cada una
     const lines = content.split('\n');
     const formattedLines = [];
     
@@ -60,12 +57,10 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
       const line = lines[i].trim();
       if (!line) continue;
       
-      // Detectar títulos con **
       if (line.includes('**')) {
         const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>');
         formattedLines.push(`<div class="mb-2">${formatted}</div>`);
       }
-      // Detectar listas numeradas
       else if (/^\d+\./.test(line)) {
         const number = line.match(/^(\d+)\./)[1];
         const content = line.replace(/^\d+\.\s*/, '');
@@ -79,7 +74,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
           </div>
         `);
       }
-      // Líneas normales
       else {
         const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>');
         formattedLines.push(`<div class="mb-2">${formatted}</div>`);
@@ -89,18 +83,15 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
     return formattedLines.join('');
   };
 
-  // Valores por defecto cuando no hay mascota asociada
   const petName = chat.pet?.name || "Consulta General";
   const petImageUrl = chat.pet?.imageUrl || "https://odinpawsimages.blob.core.windows.net/pet-images/12e4f3ae-c4e3-4104-81f4-81a977a35f38.png";
 
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-200 hover:border-primary/20">
       <div className="card-body p-0">
-        {/* Header con gradiente */}
         <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 rounded-t-2xl">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              {/* Avatar de la mascota con efecto */}
               <div className="avatar">
                 <div className="w-20 h-20 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-base-100 shadow-lg">
                   {chat.pet ? (
@@ -119,14 +110,12 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
                 </div>
               </div>
 
-              {/* Información de la mascota */}
               <div>
                 <h3 className="text-xl font-bold text-base-content flex items-center gap-2 mb-3">
                   <MessageCircle size={20} className="text-primary" />
                   {petName}
                 </h3>
                 
-                {/* Badges y fecha */}
                 <div className="flex flex-wrap items-center gap-3">
                   <div className={`badge ${getCategoryColors(chat.category)} badge-lg gap-1`}>
                     <Sparkles size={12} />
@@ -140,7 +129,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
               </div>
             </div>
             
-            {/* Botón de eliminar mejorado */}
             <div className="tooltip tooltip-left" data-tip="Eliminar conversación">
               <button
                 onClick={handleDelete}
@@ -157,9 +145,7 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
           </div>
         </div>
 
-        {/* Contenido principal */}
         <div className="p-6 space-y-6">
-          {/* Pregunta con diseño mejorado */}
           <div className="bg-gradient-to-r from-info/10 to-info/5 border-l-4 border-info p-5 rounded-r-xl">
             <div className="flex items-start gap-3 mb-3">
               <div className="flex-shrink-0 w-8 h-8 bg-info text-info-content rounded-full flex items-center justify-center">
@@ -174,14 +160,13 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
             </p>
           </div>
 
-          {/* Respuesta con formato mejorado */}
           <div className="bg-gradient-to-r from-success/10 to-success/5 border-l-4 border-success p-5 rounded-r-xl">
             <div className="flex items-start gap-3 mb-4">
               <div className="flex-shrink-0 w-8 h-8 bg-success text-success-content rounded-full flex items-center justify-center">
                 <Sparkles size={16} />
               </div>
               <h4 className="text-lg font-bold text-success flex-1">
-                Respuesta de Odin
+                Respuesta de Odin's Paw
               </h4>
             </div>
             <div className="pl-11">

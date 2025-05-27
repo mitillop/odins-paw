@@ -20,8 +20,8 @@ function PetPlan() {
     return (
       <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 flex flex-col">
         <div className="card-body p-5 flex flex-col items-center justify-center text-center flex-1 mt-39">
-          <div className="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mb-4">
-            <Beef size={32} className="text-base-content/40" />
+          <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mb-4">
+            <Beef size={30} className="text-base-content/70" />
           </div>
           <h3 className="text-lg font-semibold text-base-content/70 mb-2">
             No tienes mascotas registradas
@@ -38,8 +38,7 @@ function PetPlan() {
     return (
       <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 flex flex-col">
         <div className="card-body p-5 flex flex-col items-center justify-center text-center flex-1 mt-40">
-          <div className="w-20 h-20 bg-base-200 rounded-full flex items-center justify-center mb-4">
-            <Beef size={32} className="text-base-content/40" />
+          <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mb-4">
           </div>
           <h3 className="text-lg font-semibold text-base-content/70 mb-2">
             Ninguna mascota seleccionada

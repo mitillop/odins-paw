@@ -2,7 +2,7 @@ import { Dog, Cat } from "lucide-react";
 
 export default function PatternBackground() {
   const gridSize = 25; 
-  const numRows = 35;
+  const numRows = 50;
   const numCols = 84;
 
   return (
