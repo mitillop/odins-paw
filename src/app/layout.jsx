@@ -4,6 +4,7 @@ import { Manrope } from "next/font/google";
 import React from "react";
 import StoreProvider from "./StoreProvider";
 import Providers from "../providers";
+
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
@@ -12,12 +13,18 @@ const manrope = Manrope({
 export const metadata = {
   title: "Odin's Paw",
   description: "Para el cuidado de tus mascotas.",
+  icons: {
+    icon: '/favicon.svg',
+  }
 };
 
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      localization={{
+        locale: "es",
+      }}
     >
       <Providers>
         <StoreProvider>

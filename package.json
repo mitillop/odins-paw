@@ -13,7 +13,7 @@
     "@ai-sdk/openai": "^1.3.22",
     "@ai-sdk/react": "^1.2.12",
     "@azure/storage-blob": "^12.27.0",
-    "@clerk/nextjs": "^6.17.0",
+    "@clerk/nextjs": "^6.20.1",
     "@lucide/lab": "^0.1.2",
     "@prisma/client": "^6.6.0",
     "@reduxjs/toolkit": "^2.7.0",
