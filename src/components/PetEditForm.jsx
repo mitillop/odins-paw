@@ -15,7 +15,6 @@ function PetEditForm({ pet, onClose }) {
     formState: { errors },
     watch,
     setError,
-    setSuccess,
   } = useForm({
     defaultValues: {
       weight: pet.weight || 0,
@@ -29,9 +28,6 @@ function PetEditForm({ pet, onClose }) {
   const activityLevel = watch("activityLevel");
 
   const onSubmit = async (data) => {
-    setError(null);
-    setSuccess(false);
-
     try {
       const formActivityLevel = data.activityLevel <= 25 ? "Bajo" :
                              data.activityLevel <= 50 ? "Moderado" :
@@ -54,15 +50,14 @@ function PetEditForm({ pet, onClose }) {
         medicalConditions: data.medicalConditions || "Ninguna",
       };
 
-      // Actualizar la mascota y cerrar el modal inmediatamente
-      await updatePet(updatedPet);
-      onClose();
-      
-      // Regenerar dietas en segundo plano si es necesario
       if (weightChanged || activityChanged || medicalConditionsChanged) {
-        regenerateDiets(updatedPet).catch(error => {
-          console.error("Error regenerating diets:", error);
-        });
+        try {
+          await updatePet(updatedPet);
+          await regenerateDiets(updatedPet);
+          onClose();
+        } catch (error) {
+          console.error("Error updating pet:", error);
+        }
       }
     } catch (error) {
       console.error("Error updating pet:", error);
@@ -246,19 +241,19 @@ function PetEditForm({ pet, onClose }) {
             type="button"
             className="btn btn-ghost"
             onClick={onClose}
-            disabled={isUpdating}
+            disabled={isUpdating || isRegeneratingDiets}
           >
             Cancelar
           </button>
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={isUpdating}
+            disabled={isUpdating || isRegeneratingDiets}
           >
-            {isUpdating ? (
+            {isUpdating || isRegeneratingDiets ? (
               <>
                 <span className="loading loading-spinner loading-sm"></span>
-                Guardando...
+                {isUpdating ? "Guardando..." : "Actualizando dietas..."}
               </>
             ) : (
               "Guardar cambios"
@@ -266,6 +261,21 @@ function PetEditForm({ pet, onClose }) {
           </button>
         </div>
       </div>
+
+      {/* Loading overlay */}
+      {(isUpdating || isRegeneratingDiets) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-base-100 p-8 rounded-lg shadow-lg flex flex-col items-center gap-4">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <p className="text-lg font-medium">
+              {isUpdating ? "Guardando cambios..." : "Actualizando dietas..."}
+            </p>
+            <p className="text-sm text-base-content/70">
+              {isUpdating ? "Esto tomará un momento" : "Estamos recalculando las dietas de tu mascota"}
+            </p>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

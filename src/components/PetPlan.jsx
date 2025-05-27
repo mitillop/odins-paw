@@ -5,7 +5,15 @@ import { useAppSelector } from "../libs/hooks";
 import { useDiets } from "../hooks/useDiets";
 import { usePets } from "../hooks/usePets";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { Sunrise, Sunset, MoonStar, Beef, Download, Cat, Dog } from "lucide-react";
+import {
+  Sunrise,
+  Sunset,
+  MoonStar,
+  Beef,
+  Download,
+  Cat,
+  Dog,
+} from "lucide-react";
 import DietPDFButton from "./DietPDFButton";
 
 const COLORS = ["#FFBB28", "#FF8042", "#8884D8"];
@@ -39,6 +47,7 @@ function PetPlan() {
       <div className="card w-96 h-171 shadow-sm bg-white border border-gray-300 flex flex-col">
         <div className="card-body p-5 flex flex-col items-center justify-center text-center flex-1 mt-40">
           <div className="w-17 h-17 bg-base-200 rounded-full flex items-center justify-center mb-4">
+            <Beef size={30} className="text-base-content/70" />
           </div>
           <h3 className="text-lg font-semibold text-base-content/70 mb-2">
             Ninguna mascota seleccionada
@@ -82,7 +91,7 @@ function PetPlan() {
       </div>
     );
   }
-  
+
   if (!diets || diets.length === 0) {
     return (
       <div className="flex w-96 h-171 flex-col gap-4">
