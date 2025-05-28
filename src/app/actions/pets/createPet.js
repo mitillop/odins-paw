@@ -54,6 +54,7 @@ export async function createPet(data) {
     ...newPet,
     id: Number(newPet.id),
     userId: Number(newPet.userId),
+    age: Number(newPet.age),
     weight: Number(newPet.weight),
     createdAt: newPet.createdAt.toISOString(),
     updatedAt: newPet.updatedAt.toISOString(),

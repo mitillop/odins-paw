@@ -75,7 +75,15 @@ function PetForm({ onClose }) {
         months = (months - 1 + 12) % 12;
       }
 
-      const formattedAge = `${years}.${months}`;
+      let formattedAge;
+      if (years === 0) {
+        formattedAge = months / 10;
+        if (months >= 10) {
+          formattedAge = months / 100;
+        }
+      } else {
+        formattedAge = years + (months / 10);
+      }
 
       const breedValue =
         data.breedType === "purebred"
@@ -95,7 +103,7 @@ function PetForm({ onClose }) {
         sex: data.gender === "female" ? "Hembra" : "Macho",
         type: data.petType === "dog" ? "Perro" : "Gato",
         breed: breedValue,
-        age: formattedAge,
+        age: Number(formattedAge),
         weight: Number(data.weight) || 0,
         activityLevel: getActivityLevelText(data.activityLevel),
         medicalConditions: data.otherConditions || "Ninguna",

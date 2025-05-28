@@ -48,6 +48,7 @@ export async function deletePet(data) {
   const serializedPet = {
     ...deletedPet,
     id: Number(deletedPet.id),
+    age: Number(deletedPet.age),
     userId: Number(deletedPet.userId),
     weight: Number(deletedPet.weight),
     createdAt: deletedPet.createdAt.toISOString(),

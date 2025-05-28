@@ -15,6 +15,7 @@ export async function getPets() {
     const serializedPets = userData.pets.map(pet => ({
         ...pet,
         id: pet.id ? Number(pet.id) : null,
+        age: pet.age ? String(pet.age) : null,
         userId: pet.userId ? Number(pet.userId) : null,
         weight: pet.weight ? Number(pet.weight) : null,
         createdAt: pet.createdAt.toISOString(),
