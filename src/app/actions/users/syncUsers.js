@@ -15,7 +15,7 @@ export async function syncUserWithDB() {
       data: {
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
-        name: user.firstName,
+        name: user.firstName || user.lastName || user.emailAddresses[0].emailAddress,
         imageUrl: user.imageUrl,
       },
     })
