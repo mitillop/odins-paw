@@ -20,6 +20,9 @@ import {
   Dog,
   Weight,
   HeartPulse,
+  Github,
+  Mail,
+  Instagram,
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -858,6 +861,20 @@ export default function LandingPage() {
               <span className="text-white font-bold">🐾</span>
             </div>
             <span className="text-lg font-bold">Odin's Paw</span>
+          </div>
+          <div className="flex gap-4 mb-4">
+            <a href="https://github.com/mitillop" target="_blank" rel="noopener noreferrer" 
+               className="btn btn-ghost btn-circle hover:text-primary transition-colors">
+              <Github size={24} />
+            </a>
+            <a href="mailto:solanomezaangel@gmail.com" 
+               className="btn btn-ghost btn-circle hover:text-primary transition-colors">
+              <Mail size={24} />
+            </a>
+            <a href="https://instagram.com/mitillop" target="_blank" rel="noopener noreferrer"
+               className="btn btn-ghost btn-circle hover:text-primary transition-colors">
+              <Instagram size={24} />
+            </a>
           </div>
           <p className="text-sm">
             © 2025 Odin's Paw. Todos los derechos reservados.
