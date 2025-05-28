@@ -35,17 +35,17 @@ function Dashboard() {
             <DietsPanel />
         </div>
 
-        <ReactSwapy.Slot id={4} className="lg:col-span-1">
+        <ReactSwapy.Slot id={4} className="lg:col-span-1 ml-2">
           <ReactSwapy.Item className="h-full" name={"Chat General"}>
             <ChatGeneral />
           </ReactSwapy.Item>
         </ReactSwapy.Slot>
-        <ReactSwapy.Slot id={5} className="lg:col-span-1">
+        <ReactSwapy.Slot id={5} className="lg:col-span-1 ml-2">
           <ReactSwapy.Item className="h-full" name={"Chat Nutrition"}>
             <ChatNutrition />
           </ReactSwapy.Item>
         </ReactSwapy.Slot>
-        <ReactSwapy.Slot id={6} className="lg:col-span-1">
+        <ReactSwapy.Slot id={6} className="lg:col-span-1 ml-3">
           <ReactSwapy.Item className="h-full" name={"Chat Tips"}>
             <ChatTips />
           </ReactSwapy.Item>
