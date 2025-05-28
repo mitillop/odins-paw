@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import ReactSwapy from "react-swapy";
 import { useDiets } from "../hooks/useDiets";
 import { usePets } from "../hooks/usePets";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
@@ -152,65 +153,68 @@ function DietsPanel() {
           <Icon iconNode={bowlOverflow} size={20} className="text-primary" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {diets.map((diet) => (
-            <div
-              key={diet.id}
-              className={`card bg-base-100 border cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                selectedDiet?.id === diet.id
-                  ? "border-primary bg-primary/5 shadow-md"
-                  : "border-base-300 hover:border-primary/50"
-              }`}
-              onClick={() => {
-                const serializedDiet = {
-                  ...diet,
-                  id: String(diet.id),
-                  petId: String(diet.petId),
-                };
-                dispatch(selectDiet(serializedDiet));
-              }}
-            >
-              <div className="card-body p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <h3
-                    className={`font-semibold text-lg ${
-                      selectedDiet?.id === diet.id
-                        ? "text-primary"
-                        : "text-base-content"
-                    }`}
-                  >
-                    {diet.name}
-                  </h3>
-                  {selectedDiet?.id === diet.id && (
-                    <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  )}
-                </div>
+        <ReactSwapy.Container className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {diets.map((diet, index) => (
+            <ReactSwapy.Slot key={diet.id} id={index} className="h-full">
+              <ReactSwapy.Item className="h-full" name={diet.name}>
+                <div
+                  className={`card bg-base-100 border cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                    selectedDiet?.id === diet.id
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-base-300 hover:border-primary/50"
+                  }`}
+                  onClick={() => {
+                    const serializedDiet = {
+                      ...diet,
+                      id: String(diet.id),
+                      petId: String(diet.petId),
+                    };
+                    dispatch(selectDiet(serializedDiet));
+                  }}
+                >
+                  <div className="card-body p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3
+                        className={`font-semibold text-lg ${
+                          selectedDiet?.id === diet.id
+                            ? "text-primary"
+                            : "text-base-content"
+                        }`}
+                      >
+                        {diet.name}
+                      </h3>
+                      {selectedDiet?.id === diet.id && (
+                        <div className="w-3 h-3 bg-primary rounded-full"></div>
+                      )}
+                    </div>
 
-                <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
-                  {diet.description}
-                </p>
+                    <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
+                      {diet.description}
+                    </p>
 
-                <div className="flex justify-between items-center">
-                  {selectedDiet?.id === diet.id && (
-                    <span className="text-xs text-primary font-medium">
-                      Seleccionada
-                    </span>
-                  )}
-                  <div className="ml-auto">
-                    <DietPDFButton
-                      dietInfo={{
-                        pet: selectedPet,
-                        diet: diet,
-                      }}
-                      buttonText={<Download size={16} />}
-                      className="btn btn-square btn-ghost btn-sm hover:bg-primary/10"
-                    />
+                    <div className="flex justify-between items-center">
+                      {selectedDiet?.id === diet.id && (
+                        <span className="text-xs text-primary font-medium">
+                          Seleccionada
+                        </span>
+                      )}
+                      <div className="ml-auto">
+                        <DietPDFButton
+                          dietInfo={{
+                            pet: selectedPet,
+                            diet: diet,
+                          }}
+                          buttonText={<Download size={16} />}
+                          className="btn btn-square btn-ghost btn-sm hover:bg-primary/10"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </ReactSwapy.Item>
+            </ReactSwapy.Slot>
           ))}
-        </div>
+        </ReactSwapy.Container>
       </div>
     </div>
   );

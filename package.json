@@ -34,7 +34,9 @@
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-slick": "^0.30.3",
+    "react-swapy": "^1.0.2",
     "recharts": "^2.15.3",
+    "swapy": "^1.0.5",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
