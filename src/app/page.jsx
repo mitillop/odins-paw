@@ -36,6 +36,14 @@ export default function LandingPage() {
     }
   }, [isSignedIn, router]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   if (isSignedIn) {
     return null;
   }
@@ -56,9 +64,10 @@ export default function LandingPage() {
   const floatingAnimation = {
     y: [0, -10, 0],
     transition: {
-      duration: 2,
+      duration: 3,
       repeat: Infinity,
-      ease: "easeInOut",
+      ease: [0.4, 0, 0.2, 1],
+      repeatType: "reverse"
     },
   };
 
@@ -322,44 +331,60 @@ export default function LandingPage() {
                 <motion.div
                   animate={{
                     background: [
-                      "linear-gradient(to br, rgba(251, 146, 60, 0.2), rgba(251, 191, 36, 0.2))",
-                      "linear-gradient(to br, rgba(251, 191, 36, 0.2), rgba(251, 146, 60, 0.2))",
-                    ],
+                      "linear-gradient(45deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%)",
+                      "linear-gradient(45deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 146, 60, 0.2) 100%)"
+                    ]
                   }}
                   transition={{
-                    duration: 3,
+                    duration: 5,
                     repeat: Infinity,
                     repeatType: "reverse",
+                    ease: "easeInOut"
                   }}
                   className="absolute inset-0"
                 />
                 <motion.div
                   className="text-8xl"
                   animate={{
-                    rotate: [0, 10, -10, 0],
-                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0],
+                    scale: [1, 1.05, 1],
+                    y: [0, -5, 0]
                   }}
-                  transition={{ duration: 4, repeat: Infinity }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 >
                   🐕
                 </motion.div>
                 <motion.div
                   className="absolute top-4 right-4 text-4xl"
                   animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 15, -15, 0],
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 10, -10, 0],
+                    opacity: [0.8, 1, 0.8]
                   }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 >
                   ❤️
                 </motion.div>
                 <motion.div
                   className="absolute bottom-4 left-4 text-3xl"
                   animate={{
-                    y: [0, -10, 0],
-                    rotate: [0, -15, 15, 0],
+                    y: [0, -8, 0],
+                    rotate: [0, -10, 10, 0],
+                    scale: [1, 1.1, 1]
                   }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 >
                   🦴
                 </motion.div>
