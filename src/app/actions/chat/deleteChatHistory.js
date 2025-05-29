@@ -18,7 +18,6 @@ export async function deleteChatHistory(chatId) {
       throw new Error('Usuario no encontrado');
     }
 
-    // Verificar que la conversación pertenece al usuario
     const chatHistory = await prisma.chatHistory.findFirst({
       where: {
         id: BigInt(chatId),
@@ -30,7 +29,6 @@ export async function deleteChatHistory(chatId) {
       throw new Error('Conversación no encontrada o no tienes permisos para eliminarla');
     }
 
-    // Eliminar la conversación
     const deletedChat = await prisma.chatHistory.delete({
       where: {
         id: BigInt(chatId),

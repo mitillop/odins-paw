@@ -18,7 +18,6 @@ export async function clearAllChatHistory() {
       throw new Error('Usuario no encontrado');
     }
 
-    // Eliminar todas las conversaciones del usuario
     const deletedCount = await prisma.chatHistory.deleteMany({
       where: {
         userId: existingUser.id,

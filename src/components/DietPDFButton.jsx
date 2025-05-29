@@ -22,7 +22,6 @@ export default function DietPDFButton({ dietInfo, buttonText = "Descargar PDF", 
       const result = await generateDietPDF(dietInfo);
       
       if (result.success) {
-        // Crear un enlace invisible para descargar el PDF
         const link = document.createElement("a");
         link.href = result.pdfDataUri;
         link.download = result.fileName;

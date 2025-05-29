@@ -31,11 +31,12 @@ export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, router]);
 
   if (isSignedIn) {
-    router.push("/dashboard");
     return null;
   }
 
@@ -287,7 +288,6 @@ export default function LandingPage() {
               >
                 <SignUpButton
                   mode="modal"
-                  afterSignUpUrl="/dashboard"
                   appearance={clerkAppearance}
                 >
                   <motion.button
@@ -720,7 +720,6 @@ export default function LandingPage() {
           <motion.div variants={fadeIn} className="text-center mt-12">
             <SignUpButton
               mode="modal"
-              afterSignUpUrl="/dashboard"
               appearance={clerkAppearance}
             >
               <motion.button
@@ -791,7 +790,6 @@ export default function LandingPage() {
                   </ul>
                   <SignUpButton
                     mode="modal"
-                    afterSignUpUrl="/dashboard"
                     appearance={clerkAppearance}
                   >
                     <motion.button
@@ -834,7 +832,6 @@ export default function LandingPage() {
           </motion.p>
           <SignUpButton
             mode="modal"
-            afterSignUpUrl="/dashboard"
             appearance={clerkAppearance}
           >
             <motion.button

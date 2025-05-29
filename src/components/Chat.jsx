@@ -48,10 +48,6 @@ export default function Chat({
   const messagesEndRef = useRef(null);
   const textAreaRef = useRef(null);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('Messages updated:', messages);
-  }, [messages]);
 
   useEffect(() => {
     if (error) {

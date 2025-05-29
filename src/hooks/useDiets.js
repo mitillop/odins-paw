@@ -56,13 +56,10 @@ export function useDiets() {
 
   const handleRegenerateDiets = async (petData) => {
     try {
-      // Eliminamos las dietas actuales
       await deleteDietsMutation.mutateAsync(petData.id);
       
-      // Creamos las nuevas dietas
       await createDietMutation.mutateAsync(petData);
       
-      // La mascota seleccionada ya está manejada en el updatePetMutation
       return true;
     } catch (error) {
       console.error("Error regenerating diets:", error);

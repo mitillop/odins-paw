@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import { SignedOut, SignInButton } from "@clerk/nextjs";
 import SimplificationLogo from "../../public/Simplification.svg";
-import HistoryIcon from "../../public/history.svg"; // Importa tu SVG
+import HistoryIcon from "../../public/history.svg"; 
 import PetNavbar from "./PetNavbar"; 
 import { PawPrint } from "lucide-react";
 

@@ -40,13 +40,13 @@ export const petSlice = createSlice({
   reducers: {
     selectPet: (state, action: PayloadAction<Mascota>) => {
       state.selectedPet = action.payload;
-      state.selectedDiet = null; // Reset selected diet when changing pet
+      state.selectedDiet = null; 
     },
     setPet: (state, action: PayloadAction<Mascota[]>) => {
       if (action.payload.length > 0) {
         state.selectedPet = action.payload[0];
         state.pets = action.payload;
-        state.selectedDiet = null; // Reset selected diet
+        state.selectedDiet = null; 
       }
     },
     deletePet: (state, action: PayloadAction<Mascota>) => {
@@ -54,14 +54,14 @@ export const petSlice = createSlice({
       state.pets = state.pets.filter((pet) => pet.id !== petToDelete.id);
       if (state.selectedPet?.id === petToDelete.id) {
         state.selectedPet = null;
-        state.selectedDiet = null; // Reset selected diet
+        state.selectedDiet = null; 
       }
     },
     createPet: (state, action: PayloadAction<Mascota>) => {
       const newPet = action.payload;
       state.pets = [...state.pets, newPet];
       state.selectedPet = newPet;
-      state.selectedDiet = null; // Reset selected diet
+      state.selectedDiet = null; 
     },
     selectDiet: (state, action: PayloadAction<Diet>) => {
       state.selectedDiet = action.payload;

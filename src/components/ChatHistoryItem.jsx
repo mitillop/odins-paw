@@ -48,7 +48,6 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
     }
   };
 
-  // Función para formatear el contenido de la respuesta
   const formatResponse = (content) => {
     const lines = content.split('\n');
     const formattedLines = [];

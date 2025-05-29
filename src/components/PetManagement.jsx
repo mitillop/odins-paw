@@ -11,7 +11,6 @@ function PetManagement() {
   const { pets, isLoading, handleSelectPet, createNewPet, isCreating } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Memoizar el ID de la mascota seleccionada para comparaciones más eficientes
   const selectedPetId = useMemo(() => selectedPet?.id, [selectedPet]);
 
   const openModal = () => setIsModalOpen(true);

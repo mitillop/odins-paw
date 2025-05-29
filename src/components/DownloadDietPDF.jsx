@@ -23,7 +23,6 @@ export default function DownloadDietPDF({ petId, dietId, buttonText = "Descargar
       const result = await createDietPDF(petId, dietId);
       
       if (result.success) {
-        // Create an invisible anchor element to trigger the download
         const link = document.createElement("a");
         link.href = result.pdfDataUri;
         link.download = result.fileName;

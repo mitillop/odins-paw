@@ -6,7 +6,6 @@ import { useCallback } from "react";
 export function useChatMutations() {
   const queryClient = useQueryClient();
 
-  // Función para invalidar el cache del historial cuando se crea una nueva conversación
   const invalidateChatHistory = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
   }, [queryClient]);
