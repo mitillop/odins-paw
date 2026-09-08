@@ -50,18 +50,7 @@ npm install
 ```
 3. **Configurar variables de entorno**
 ```bash
-cp .env.example .env.local
-```
-```bash
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=  
-
-CLERK_SECRET_KEY=  
-  
-DATABASE_URL=  
-  
-OPENAI_API_KEY=  
-  
-AZURE_STORAGE_CONNECTION_STRING=
+configura tus variables
 ```
 4. **Configurar la base de datos**
 ```
@@ -81,14 +70,8 @@ http://localhost:3000
 ```
 src/  
 ├── app/                    # App Router de Next.js  
-│   ├── dashboard/         # Panel principal de la aplicación  
-│   ├── sign-in/          # Página de inicio de sesión  
-│   └── sign-up/          # Página de registro  
 ├── components/           # Componentes React reutilizables  
-│   ├── PetForm.jsx      # Formulario de registro de mascotas  
-│   └── PetNavbar.jsx    # Navegación de mascotas  
 ├── libs/                # Utilidades y configuraciones  
-│   └── db.js           # Cliente de Prisma  
 └── ...  
 ```
 
@@ -99,14 +82,6 @@ src/
 * npm run start - Servidor de producción
 * npm run lint - Linter de código
 
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crear una rama para tu feature (git checkout -b feature/AmazingFeature)
-3. Commit tus cambios (git commit -m 'Add some AmazingFeature')
-4. Push a la rama (git push origin feature/AmazingFeature)
-5. Abrir un Pull Request
 
 ## 📄 Licencia
 
