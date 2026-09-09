@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "pet" ALTER COLUMN "age" SET DATA TYPE DECIMAL(5,2);

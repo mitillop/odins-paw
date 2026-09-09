@@ -83,7 +83,7 @@ export default function ChatHistoryItem({ chat, onDelete, isDeleting }) {
   };
 
   const petName = chat.pet?.name || "Consulta General";
-  const petImageUrl = chat.pet?.imageUrl || "https://odinpawsimages.blob.core.windows.net/pet-images/12e4f3ae-c4e3-4104-81f4-81a977a35f38.png";
+  const petImageUrl = chat.pet?.imageUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='40' fill='%239ca3af' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E";
 
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-200 hover:border-primary/20">

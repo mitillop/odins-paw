@@ -2,12 +2,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Cat, Dog, Mars, Venus } from "lucide-react";
-import { usePets } from "../hooks/usePets";
-import { useDiets } from "../hooks/useDiets";
+import { useDashboard } from "../contexts/DashboardContext";
 
 function PetEditForm({ pet, onClose }) {
-  const { updatePet, isUpdating } = usePets();
-  const { regenerateDiets, isRegeneratingDiets } = useDiets();
+  const { handleUpdatePet: updatePetFn, isUpdating, handleRegenerateDiets: regenerateDietsFn, isRegeneratingDiets } = useDashboard();
 
   const {
     register,
@@ -52,8 +50,8 @@ function PetEditForm({ pet, onClose }) {
 
       if (weightChanged || activityChanged || medicalConditionsChanged) {
         try {
-          await updatePet(updatedPet);
-          await regenerateDiets(updatedPet);
+          await updatePetFn(updatedPet);
+          await regenerateDietsFn(updatedPet);
           onClose();
         } catch (error) {
           console.error("Error updating pet:", error);

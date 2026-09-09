@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useAppSelector } from "../libs/hooks";
+import { useDashboard } from "../contexts/DashboardContext";
 import { Cat, Dog, VenusAndMars, HeartPulse, Weight, Zap, CalendarHeart, Squirrel, X } from "lucide-react";
-import { usePets } from "../hooks/usePets";
 import PetEditForm from "./PetEditForm";
 import ModalPortal from "./ModalPortal";
 
@@ -10,7 +10,7 @@ function PetInfo() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { selectLatestPet, pets, deletePet, isDeleting } = usePets();
+  const { pets, handleDeletePet: deletePetFn, isDeleting } = useDashboard();
 
   if (!pets || pets.length === 0) {
     return (
@@ -53,7 +53,7 @@ function PetInfo() {
   };
 
   const confirmDelete = () => {
-    deletePet(selectedPet, {
+    deletePetFn(selectedPet, {
       onSuccess: () => {
         setIsConfirmModalOpen(false);
       },

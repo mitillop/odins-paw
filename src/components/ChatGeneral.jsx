@@ -2,13 +2,11 @@
 
 import { CircleHelp, BrainCircuit, Dog } from "lucide-react";
 import Chat from "./Chat";
-import { useDiets } from "../hooks/useDiets";
-import { usePets } from "../hooks/usePets";
+import { useDashboard } from "../contexts/DashboardContext";
 import { useSelector } from "react-redux";
 
 function ChatGeneral() {
-  const { diets } = useDiets();
-  const { pets } = usePets();
+  const { diets, pets } = useDashboard();
   const selectedPet = useSelector((state) => state.pet.selectedPet);
   const selectedDiet = useSelector((state) => state.pet.selectedDiet);
 

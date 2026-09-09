@@ -4,12 +4,10 @@ import { Mars, Venus, Dog, Cat } from "lucide-react";
 import { createPet } from "../app/actions/pets/createPet";
 import { useForm } from "react-hook-form";
 import { uploadFile } from "../app/actions/files/uploadFile";
-import { usePets } from "../hooks/usePets";
-import { useDiets } from "../hooks/useDiets";
+import { useDashboard } from "../contexts/DashboardContext";
 
 function PetForm({ onClose }) {
-  const { createNewPet, isCreating } = usePets();
-  const { regenerateDiets, isRegeneratingDiets } = useDiets();
+  const { handleCreatePet: createNewPet, isCreating, handleRegenerateDiets: regenerateDietsFn, isRegeneratingDiets } = useDashboard();
 
   const {
     register,
@@ -133,7 +131,7 @@ function PetForm({ onClose }) {
       });
 
       if (createdPet) {
-        await regenerateDiets(createdPet);
+        await regenerateDietsFn(createdPet);
         await new Promise(resolve => setTimeout(resolve, 1000));
         onClose();
       }

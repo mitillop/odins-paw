@@ -1,14 +1,14 @@
 "use client";
 import { useState, useMemo } from "react";
-import { useAppSelector, useAppDispatch } from "../libs/hooks";
-import { usePets } from "../hooks/usePets";
+import { useAppSelector } from "../libs/hooks";
+import { useDashboard } from "../contexts/DashboardContext";
 import { CirclePlus, Cat, Dog, Settings, X } from "lucide-react";
 import PetForm from "./PetForm";
 import ModalPortal from "./ModalPortal";
 
 function PetManagement() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
-  const { pets, isLoading, handleSelectPet, createNewPet, isCreating } = usePets();
+  const { pets, isLoadingPets, handleSelectPet, handleCreatePet: createNewPet, isCreating } = useDashboard();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const selectedPetId = useMemo(() => selectedPet?.id, [selectedPet]);
@@ -24,7 +24,7 @@ function PetManagement() {
     });
   };
 
-  if (isLoading) {
+  if (isLoadingPets) {
     return (
       <div className="card w-96 h-171 bg-white shadow-md">
         <div className="card-body p-4">

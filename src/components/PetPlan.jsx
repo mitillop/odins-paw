@@ -2,8 +2,7 @@
 
 import React from "react";
 import { useAppSelector } from "../libs/hooks";
-import { useDiets } from "../hooks/useDiets";
-import { usePets } from "../hooks/usePets";
+import { useDashboard } from "../contexts/DashboardContext";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 import {
   Sunrise,
@@ -21,8 +20,7 @@ const COLORS = ["#FFBB28", "#FF8042", "#8884D8"];
 function PetPlan() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const selectedDiet = useAppSelector((state) => state.pet.selectedDiet);
-  const { diets, isLoading, error } = useDiets();
-  const { pets } = usePets();
+  const { diets, isLoadingDiets, dietsError, pets } = useDashboard();
 
   if (!pets || pets.length === 0) {
     return (
@@ -60,7 +58,7 @@ function PetPlan() {
     );
   }
 
-  if (isLoading) {
+  if (isLoadingDiets) {
     return (
       <div className="flex w-96 h-171 flex-col gap-4">
         <div className="skeleton h-60 w-full"></div>
@@ -76,7 +74,7 @@ function PetPlan() {
     );
   }
 
-  if (error) {
+  if (dietsError) {
     return (
       <div className="flex w-96 h-171 flex-col gap-4">
         <div className="skeleton h-60 w-full"></div>

@@ -1,8 +1,7 @@
-import OpenAI from 'openai';
 import { streamText } from 'ai';
 import prisma from "../../../../libs/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 
 export const maxDuration = 30;
 
@@ -36,7 +35,7 @@ export async function POST(req) {
     }
 
     const result = await streamText({
-      model: openai('gpt-4o-mini'),
+      model: google('gemini-2.5-flash'),
       messages: [
         { role: "system", content: systemPrompt },
         ...messages

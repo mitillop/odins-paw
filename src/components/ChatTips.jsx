@@ -2,15 +2,13 @@
 
 import { HeartPulse, BrainCircuit } from "lucide-react";
 import Chat from "./Chat";
-import { useDiets } from "../hooks/useDiets";
-import { usePets } from "../hooks/usePets";
+import { useDashboard } from "../contexts/DashboardContext";
 import { useSelector } from "react-redux";
 
 function ChatTips() {
   const selectedPet = useSelector((state) => state.pet.selectedPet);
   const selectedDiet = useSelector((state) => state.pet.selectedDiet);
-  const { diets } = useDiets();
-  const { pets } = usePets();
+  const { diets, pets } = useDashboard();
   
   if (!pets || pets.length === 0) {
     return (

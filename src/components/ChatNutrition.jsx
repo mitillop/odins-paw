@@ -2,14 +2,12 @@
 
 import { Utensils, BrainCircuit, Dog } from "lucide-react";
 import Chat from "./Chat";
-import { useDiets } from "../hooks/useDiets";
-import { usePets } from "../hooks/usePets";
+import { useDashboard } from "../contexts/DashboardContext";
 import { useSelector } from "react-redux";
 
 function ChatNutrition() {
   const selectedPet = useSelector((state) => state.pet.selectedPet);
-  const { diets } = useDiets();
-  const { pets } = usePets();
+  const { diets, pets } = useDashboard();
   const selectedDiet = useSelector((state) => state.pet.selectedDiet);
 
   if (!pets || pets.length === 0) {

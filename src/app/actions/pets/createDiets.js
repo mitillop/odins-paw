@@ -1,5 +1,6 @@
 "use server";
-import OpenAI from "openai";
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
 import prisma from "../../../libs/db";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -30,11 +31,8 @@ export async function createPetDiet(data) {
     );
   }
 
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4.1",
+  const { text } = await generateText({
+    model: google('gemini-2.5-flash'),
     messages: [
       {
         role: "system",
@@ -74,10 +72,13 @@ Responde con un arreglo de 6 objetos JSON, donde el primero corresponde a la die
 `,
       },
     ],
-  });  const dietResponse = completion.choices[0].message.content;
+  });  const dietResponse = text;
   
-  const jsonContent = dietResponse.replace(/```json|```/g, '').trim();
-  const dietData = JSON.parse(jsonContent);
+  const jsonMatch = dietResponse.match(/\[[\s\S]*\]/);
+  if (!jsonMatch) {
+    throw new Error("No se encontró un arreglo JSON en la respuesta de Gemini");
+  }
+  const dietData = JSON.parse(jsonMatch[0]);
 
   const petDiets = await Promise.all(
     dietData.map(diet => 

@@ -1,12 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['odinpawsimages.blob.core.windows.net'],
+    domains: ['res.cloudinary.com', 'storage.c-2.us-east-2.aws.neon.tech'],
   },
-  // Configuración para evitar errores HTTP 431
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client'],
-  },
+  serverExternalPackages: ['@prisma/client'],
   // Configuración de headers para evitar problemas
   async headers() {
     return [

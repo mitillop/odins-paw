@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { useDiets } from "../hooks/useDiets";
-import { usePets } from "../hooks/usePets";
+import { useDashboard } from "../contexts/DashboardContext";
 import { useAppSelector, useAppDispatch } from "../libs/hooks";
 import { Download, Icon } from "lucide-react";
 import { bowlOverflow } from "@lucide/lab";
@@ -12,11 +11,10 @@ import { selectDiet } from "../libs/features/pet/petSlice";
 function DietsPanel() {
   const selectedPet = useAppSelector((state) => state.pet.selectedPet);
   const selectedDiet = useAppSelector((state) => state.pet.selectedDiet);
-  const { diets, isLoading, error } = useDiets();
-  const { isCreatingDiet, pets } = usePets();
+  const { diets, isLoadingDiets, dietsError, isCreatingDiet, pets } = useDashboard();
   const dispatch = useAppDispatch();
 
-  const showLoading = isLoading || isCreatingDiet;
+  const showLoading = isLoadingDiets || isCreatingDiet;
 
   if (!pets || pets.length === 0) {
     return (
@@ -99,7 +97,7 @@ function DietsPanel() {
     );
   }
 
-  if (error) {
+  if (dietsError) {
     return (
       <div className="card w-full bg-white shadow-md">
         <div className="card-body p-6">
