@@ -47,14 +47,13 @@ export async function uploadFile(file) {
     }
 
     const fileExtension = originalName.split('.').pop() || 'jpg';
-    const key = `pet-images/${uuidv4()}.${fileExtension}`;
+    const key = `${uuidv4()}.${fileExtension}`;
 
     const command = new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key,
       Body: buffer,
       ContentType: mimeType,
-      ACL: 'public-read',
     });
 
     await s3Client.send(command);
