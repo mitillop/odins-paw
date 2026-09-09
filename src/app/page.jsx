@@ -49,18 +49,6 @@ function FadeInSection({ children, className = "", delay = 0 }) {
   );
 }
 
-function ScaleOnPress({ children, className = "" }) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.97 }}
-      transition={{ type: "spring", ...springConfig }}
-      className={className}
-    >
-      {children}
-    </motion.button>
-  );
-}
-
 export default function LandingPage() {
   const router = useRouter();
   const { isSignedIn } = useUser();
@@ -154,14 +142,14 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <SignInButton mode="modal" appearance={clerkAppearance}>
-              <ScaleOnPress className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-full">
+              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-full active:scale-[0.97]">
                 Iniciar Sesión
-              </ScaleOnPress>
+              </button>
             </SignInButton>
             <SignUpButton mode="modal" appearance={clerkAppearance}>
-              <ScaleOnPress className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 transition-colors rounded-full">
+              <button className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 transition-colors rounded-full active:scale-[0.97]">
                 Comenzar
-              </ScaleOnPress>
+              </button>
             </SignUpButton>
           </div>
         </div>
@@ -196,10 +184,10 @@ export default function LandingPage() {
           <FadeInSection delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <SignUpButton mode="modal" appearance={clerkAppearance}>
-                <ScaleOnPress className="px-8 py-3.5 bg-orange-500 text-white font-medium rounded-full text-base hover:bg-orange-600 transition-colors flex items-center gap-2 group">
+                <button className="px-8 py-3.5 bg-orange-500 text-white font-medium rounded-full text-base hover:bg-orange-600 transition-colors flex items-center gap-2 group active:scale-[0.97]">
                   Empezar gratis
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </ScaleOnPress>
+                </button>
               </SignUpButton>
               <a
                 href="#como-funciona"
@@ -293,10 +281,10 @@ export default function LandingPage() {
               a tu mascota.
             </p>
             <SignUpButton mode="modal" appearance={clerkAppearance}>
-              <ScaleOnPress className="px-10 py-4 bg-orange-500 text-white font-medium rounded-full text-base hover:bg-orange-600 transition-colors inline-flex items-center gap-2 group">
+              <button className="px-10 py-4 bg-orange-500 text-white font-medium rounded-full text-base hover:bg-orange-600 transition-colors inline-flex items-center gap-2 group active:scale-[0.97]">
                 Crear cuenta gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </ScaleOnPress>
+              </button>
             </SignUpButton>
           </FadeInSection>
         </div>
