@@ -30,6 +30,7 @@
     "**/*.tsx"
 , "src/app/providers.jsx"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "neon.ts"
   ]
 }
