@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Mars, Venus, Dog, Cat } from "lucide-react";
 import { createPet } from "../app/actions/pets/createPet";
 import { useForm } from "react-hook-form";
-import { uploadFile } from "../app/actions/files/uploadFile";
 import { useDashboard } from "../contexts/DashboardContext";
 
 function PetForm({ onClose }) {
@@ -93,7 +92,12 @@ function PetForm({ onClose }) {
 
       let imgUrl = null;
       if (photoFile) {
-        imgUrl = await uploadFile(photoFile);
+        const formData = new FormData();
+        formData.append("file", photoFile);
+        const res = await fetch("/api/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Error al subir la imagen");
+        imgUrl = data.url;
       }
 
       const petData = {
